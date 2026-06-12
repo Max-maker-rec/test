@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RYCS — Social Job Advertising, Reimagined</title>
+  <meta name="description" content="RYCS turns your job openings into high-performance social ad campaigns across every major platform. Attract talent where they actually spend their time." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- GSAP + Plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+  <style>
+    :root {
+      /* Dark zones (hero, CTA) */
+      --black: #080810;
+      --dark: #0d0d1a;
+      --card-dark: #111122;
+      /* Light zones (all content sections) */
+      --bg: #FAFAFA;
+      --bg-alt: #F2F3F7;
+      --card: #FFFFFF;
+      --border: rgba(0,0,0,0.08);
+      --border-dark: rgba(255,255,255,0.07);
+      --text: #0A0A18;
+      --text-mid: #444458;
+      --purple: #7B2FFF;
+      --purple-light: #9B5FFF;
+      --cyan: #00C2D4;
+      --cyan-bright: #00E5FF;
+      --coral: #FF4757;
+      --green: #00C97A;
+      --white: #FFFFFF;
+      --muted: rgba(255,255,255,0.5);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      pointer-events: none;
+    }
+    .cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--cyan);
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, background .2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(0,229,255,0.5);
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%,-50%);
+      transition: width .3s, height .3s, border-color .3s;
+    }
+    body:has(a:hover) .cursor-dot,
+    body:has(button:hover) .cursor-dot { width: 12px; height: 12px; background: var(--purple-light); }
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring { width: 56px; height: 56px; border-color: var(--purple-light); }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 5vw;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,8,16,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-dark);
+      transition: background .4s, border-color .4s;
+    }
+    nav.light {
+      background: rgba(250,250,250,0.9);
+      border-bottom-color: var(--border);
+    }
+    nav.light .nav-links a { color: var(--text-mid); }
+    nav.light .nav-links a:hover { color: var(--text); }
+    nav.light .nav-links a::after { background: var(--purple); }
+    nav.light .btn-ghost { color: var(--text-mid); }
+    nav.light .btn-ghost:hover { color: var(--text); }
+    nav.light .nav-logo {
+      background: linear-gradient(135deg, var(--text) 0%, var(--purple) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--white) 0%, var(--purple-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: .85rem; font-weight: 500; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--muted);
+      text-decoration: none; transition: color .2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--cyan-bright);
+      transform: scaleX(0); transition: transform .3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta { display: flex; align-items: center; gap: 1rem; }
+    .btn-ghost {
+      font-family: var(--font-body); font-size: .85rem; font-weight: 500;
+      color: var(--muted); background: none; border: none;
+      cursor: none; padding: .5rem 1rem; transition: color .2s;
+      letter-spacing: .02em; text-decoration: none;
+    }
+    .btn-ghost:hover { color: var(--white); }
+    .btn-primary {
+      font-family: var(--font-body); font-size: .85rem; font-weight: 600;
+      color: #fff; background: var(--purple);
+      border: none; cursor: none;
+      padding: .6rem 1.4rem; border-radius: 100px;
+      letter-spacing: .02em;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(123,47,255,0.4);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; height: 100vh; min-height: 700px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    #three-canvas {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-glow {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 60%, rgba(123,47,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 20%, rgba(0,229,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      max-width: 960px;
+      padding: 0 5vw;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(123,47,255,0.15);
+      border: 1px solid rgba(123,47,255,0.4);
+      border-radius: 100px;
+      padding: .35rem 1rem;
+      font-size: .75rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--purple-light);
+      margin-bottom: 2rem;
+      opacity: 0;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--purple-light); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.4); } }
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .word { display: inline-block; }
+    .hero-title .gradient-word {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple-light) 50%, var(--coral) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      font-weight: 300;
+    }
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+    }
+    .btn-large {
+      font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+      padding: .9rem 2.2rem; border-radius: 100px;
+      cursor: none; text-decoration: none; display: inline-block;
+      letter-spacing: .01em;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .btn-large.primary {
+      background: var(--cyan); color: var(--black);
+    }
+    .btn-large.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,229,255,0.4);
+    }
+    .btn-large.outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white);
+    }
+    .btn-large.outline:hover {
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.05);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      opacity: 0;
+    }
+    .hero-scroll span { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--muted), transparent); }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      padding: 3rem 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden; position: relative; z-index: 2;
+    }
+    .marquee-track {
+      display: flex; gap: 4rem; align-items: center;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .platform-pill {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .6rem 1.4rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      white-space: nowrap;
+      font-size: .85rem; font-weight: 500; color: var(--text-mid);
+      transition: color .2s, border-color .2s, box-shadow .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .platform-pill:hover {
+      color: var(--text);
+      border-color: rgba(123,47,255,.3);
+      box-shadow: 0 4px 16px rgba(123,47,255,.12);
+    }
+    .platform-icon { font-size: 1.1rem; }
+
+    /* ── SECTIONS SHARED ── */
+    section { position: relative; z-index: 2; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 5vw; }
+    .section-pad { padding: 8rem 0; }
+    .section-tag {
+      display: inline-block;
+      font-size: .72rem; font-weight: 700; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 1.2rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 800; line-height: 1.08;
+      letter-spacing: -0.035em; margin-bottom: 1.2rem;
+      color: var(--text);
+    }
+    .section-sub {
+      font-size: 1.05rem; color: var(--text-mid); line-height: 1.75;
+      max-width: 560px; font-weight: 400;
+    }
+
+    /* ── NO DEMO STRIP ── */
+    #nodemo {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 0;
+    }
+    .nodemo-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border-radius: 20px; overflow: hidden;
+    }
+    .nodemo-cell {
+      background: var(--dark);
+      padding: 2.5rem 2rem;
+      display: flex; align-items: flex-start; gap: 1.2rem;
+    }
+    .nodemo-icon {
+      font-size: 1.6rem; flex-shrink: 0; margin-top: .1rem;
+      width: 48px; height: 48px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .nodemo-cell { background: var(--bg-alt); }
+    .nodemo-title { font-family: var(--font-head); font-size: 1rem; font-weight: 700; margin-bottom: .3rem; color: var(--text); }
+    .nodemo-desc { font-size: .85rem; color: var(--text-mid); line-height: 1.6; }
+    .nodemo-strike {
+      text-decoration: line-through; color: rgba(255,71,87,.6);
+    }
+    .nodemo-good { color: var(--green); font-weight: 600; }
+
+    /* ── STATS ── */
+    #stats { background: var(--bg); }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; border: 1px solid var(--border); border-radius: 24px;
+      overflow: hidden; background: var(--border);
+      box-shadow: 0 2px 24px rgba(0,0,0,.06);
+    }
+    .stat-cell { background: var(--white); padding: 3rem 2rem; text-align: center; }
+    .stat-number {
+      font-family: var(--font-head);
+      font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--text) 0%, var(--purple) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1; margin-bottom: .5rem;
+    }
+    .stat-label { font-size: .85rem; color: var(--text-mid); font-weight: 400; line-height: 1.5; }
+
+    /* ── HOW IT WORKS ── */
+    #how { background: var(--bg-alt); }
+    .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .steps-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .step-item {
+      display: grid; grid-template-columns: 56px 1fr;
+      gap: 1.5rem; padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: none; transition: background .3s;
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      width: 48px; height: 48px;
+      border: 1px solid var(--border); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head); font-size: .85rem; font-weight: 700;
+      color: var(--purple);
+      background: rgba(123,47,255,.06);
+      transition: background .3s, border-color .3s; flex-shrink: 0;
+    }
+    .step-item:hover .step-num { background: rgba(123,47,255,.12); border-color: rgba(123,47,255,.4); }
+    .step-title { font-family: var(--font-head); font-size: 1.15rem; font-weight: 700; margin-bottom: .4rem; line-height: 1.3; color: var(--text); }
+    .step-desc { font-size: .9rem; color: var(--text-mid); line-height: 1.7; }
+    .how-visual {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--border);
+      aspect-ratio: 4/5;
+    }
+    .how-visual-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      padding: 2rem;
+      gap: 1rem;
+    }
+    .mock-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: .5rem;
+    }
+    .mock-dots { display: flex; gap: .5rem; }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mock-dot:nth-child(1) { background: #FF5F57; }
+    .mock-dot:nth-child(2) { background: #FEBC2E; }
+    .mock-dot:nth-child(3) { background: #28C840; }
+    .mock-title-bar { font-size: .75rem; color: var(--muted); }
+    .mock-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem 1.4rem;
+    }
+    .mock-card-label { font-size: .7rem; color: var(--text-mid); margin-bottom: .4rem; text-transform: uppercase; letter-spacing: .08em; }
+    .mock-card-val { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
+    .mock-card-val.up { color: var(--green); }
+    .mock-bar-row { display: flex; flex-direction: column; gap: .5rem; margin-top: .5rem; }
+    .mock-bar-item { display: flex; align-items: center; gap: .75rem; }
+    .mock-bar-label { font-size: .72rem; color: var(--text-mid); width: 70px; }
+    .mock-bar-bg { flex: 1; height: 6px; background: rgba(0,0,0,0.07); border-radius: 3px; overflow: hidden; }
+    .mock-bar-fill { height: 100%; border-radius: 3px; transition: width 1.5s cubic-bezier(.16,1,.3,1); }
+    .mock-channels { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+    .mock-ch {
+      padding: .3rem .8rem; border-radius: 100px;
+      font-size: .7rem; font-weight: 600;
+      border: 1px solid;
+    }
+    .mock-ch.li { color: #0A66C2; border-color: rgba(10,102,194,.4); background: rgba(10,102,194,.1); }
+    .mock-ch.fb { color: #1877F2; border-color: rgba(24,119,242,.4); background: rgba(24,119,242,.1); }
+    .mock-ch.ig { color: #E4405F; border-color: rgba(228,64,95,.4); background: rgba(228,64,95,.1); }
+    .mock-ch.tt { color: #69C9D0; border-color: rgba(105,201,208,.4); background: rgba(105,201,208,.1); }
+    .mock-ch.sc { color: #FFFC00; border-color: rgba(255,252,0,.4); background: rgba(255,252,0,.07); }
+    .mock-ch.yt { color: #FF0000; border-color: rgba(255,0,0,.4); background: rgba(255,0,0,.1); }
+
+    /* ── HIRE FUNNEL ── */
+    #funnel { background: var(--bg); }
+    .funnel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .funnel-visual { display: flex; flex-direction: column; gap: .75rem; }
+    .funnel-stage {
+      border-radius: 14px; padding: 1.1rem 1.5rem;
+      border: 1px solid var(--border); background: var(--white);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .funnel-stage:hover { transform: translateX(6px); border-color: rgba(123,47,255,.35); box-shadow: 0 4px 20px rgba(123,47,255,.1); }
+    .funnel-stage-label { font-size: .85rem; font-weight: 600; color: var(--text); }
+    .funnel-stage-sub { font-size: .72rem; color: var(--text-mid); margin-top: .15rem; }
+    .funnel-stage-num { font-family: var(--font-head); font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; color: var(--text); }
+    .funnel-stage:nth-child(1) { width: 100%; }
+    .funnel-stage:nth-child(2) { width: 88%; }
+    .funnel-stage:nth-child(3) { width: 74%; }
+    .funnel-stage:nth-child(4) { width: 60%; }
+    .funnel-stage:nth-child(5) {
+      width: 48%;
+      background: linear-gradient(135deg, rgba(0,201,122,0.08) 0%, rgba(0,194,212,0.06) 100%);
+      border-color: rgba(0,201,122,.35);
+    }
+    .funnel-stage:nth-child(5) .funnel-stage-num { color: var(--green); }
+    .funnel-alert {
+      margin-top: .25rem; border: 1px dashed rgba(255,71,87,.35);
+      background: rgba(255,71,87,.05); border-radius: 14px;
+      padding: 1rem 1.5rem; font-size: .8rem; color: #CC3344; line-height: 1.6;
+    }
+    .funnel-alert strong { color: var(--coral); }
+    .funnel-points { list-style: none; display: flex; flex-direction: column; gap: 1.4rem; margin-top: 2.2rem; }
+    .funnel-points li { display: flex; gap: 1rem; align-items: flex-start; }
+    .funnel-point-icon {
+      width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
+      border: 1px solid var(--border); background: rgba(123,47,255,.07);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .funnel-point-title { font-weight: 600; font-size: .95rem; margin-bottom: .25rem; color: var(--text); }
+    .funnel-point-desc { font-size: .85rem; color: var(--text-mid); line-height: 1.65; }
+
+    /* ── FEATURES ── */
+    #features { background: var(--bg-alt); }
+    .features-header { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: end; margin-bottom: 4rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .feature-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+      cursor: none; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .feature-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(123,47,255,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card:hover { border-color: rgba(123,47,255,0.35); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(123,47,255,.1); }
+    .feature-card.accent {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(123,47,255,0.06) 0%, rgba(0,194,212,0.04) 100%);
+      border-color: rgba(123,47,255,0.2);
+    }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.2rem;
+      background: rgba(123,47,255,.08); border: 1px solid rgba(123,47,255,.15);
+    }
+    .feature-name { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; line-height: 1.3; color: var(--text); }
+    .feature-desc { font-size: .88rem; color: var(--text-mid); line-height: 1.7; }
+    .feature-tag {
+      display: inline-block; margin-top: 1rem;
+      font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: .25rem .7rem;
+      border-radius: 100px; border: 1px solid;
+    }
+    .feature-tag.new { color: var(--green); border-color: rgba(0,255,148,.3); background: rgba(0,255,148,.08); }
+    .feature-tag.ai { color: var(--purple-light); border-color: rgba(155,95,255,.3); background: rgba(155,95,255,.08); }
+
+    /* ── SOCIAL CHANNELS ── */
+    #channels {
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .channels-header { text-align: center; margin-bottom: 4rem; }
+    .channels-header .section-sub { margin: 0 auto; }
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .channel-card {
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s;
+      cursor: none;
+    }
+    .channel-card:hover { transform: translateY(-6px); }
+    .channel-card .channel-logo { font-size: 2.2rem; margin-bottom: 1.2rem; display: block; }
+    .channel-name {
+      font-family: var(--font-head); font-size: 1.3rem; font-weight: 800;
+      margin-bottom: .4rem; letter-spacing: -0.02em;
+    }
+    .channel-stat { font-size: .85rem; font-weight: 600; margin-bottom: .8rem; }
+    .channel-desc { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+    .channel-glow {
+      position: absolute;
+      bottom: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      opacity: .15;
+      filter: blur(40px);
+    }
+    .ch-li { background: rgba(10,102,194,0.08); border-color: rgba(10,102,194,.25); }
+    .ch-li .channel-name, .ch-li .channel-stat { color: #4CA3FF; }
+    .ch-li .channel-glow { background: #0A66C2; }
+    .ch-fb { background: rgba(24,119,242,0.08); border-color: rgba(24,119,242,.25); }
+    .ch-fb .channel-name, .ch-fb .channel-stat { color: #5BA3FF; }
+    .ch-fb .channel-glow { background: #1877F2; }
+    .ch-ig { background: rgba(228,64,95,0.08); border-color: rgba(228,64,95,.25); }
+    .ch-ig .channel-name, .ch-ig .channel-stat { color: #F06080; }
+    .ch-ig .channel-glow { background: #E4405F; }
+    .ch-tt { background: rgba(105,201,208,0.08); border-color: rgba(105,201,208,.25); }
+    .ch-tt .channel-name, .ch-tt .channel-stat { color: #69C9D0; }
+    .ch-tt .channel-glow { background: #69C9D0; }
+    .ch-sc { background: rgba(255,252,0,0.05); border-color: rgba(255,252,0,.2); }
+    .ch-sc .channel-name, .ch-sc .channel-stat { color: #FFFC00; }
+    .ch-sc .channel-glow { background: #FFFC00; }
+    .ch-x { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,.1); }
+    .ch-x .channel-name, .ch-x .channel-stat { color: var(--white); }
+    .ch-x .channel-glow { background: #fff; }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--bg-alt); }
+    .testimonials-header { text-align: center; margin-bottom: 4rem; }
+    .testimonials-header .section-sub { margin: 0 auto; }
+    .testimonials-track-wrap { overflow: hidden; }
+    .testimonials-track {
+      display: flex; gap: 1.5rem;
+      width: max-content;
+      animation: marquee2 40s linear infinite;
+    }
+    @keyframes marquee2 { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .testimonials-track:hover { animation-play-state: paused; }
+    .testi-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem 2.2rem;
+      width: 360px; flex-shrink: 0; position: relative;
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    }
+    .testi-stars { display: flex; gap: .25rem; margin-bottom: 1rem; }
+    .testi-star { color: #F5A623; font-size: .9rem; }
+    .testi-quote { font-size: .95rem; line-height: 1.7; color: var(--text-mid); margin-bottom: 1.5rem; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: .75rem; }
+    .testi-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: var(--white); flex-shrink: 0;
+    }
+    .testi-name { font-weight: 600; font-size: .9rem; color: var(--text); }
+    .testi-role { font-size: .78rem; color: var(--text-mid); }
+
+    /* ── RESULTS ── */
+    #results { background: var(--bg); }
+    .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .result-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 1rem; align-items: start;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      cursor: none; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .result-card:hover { transform: translateY(-4px); border-color: rgba(123,47,255,.2); box-shadow: 0 12px 32px rgba(123,47,255,.08); }
+    .result-card.featured {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(0,194,212,0.05) 0%, rgba(123,47,255,0.05) 100%);
+      border-color: rgba(123,47,255,0.2);
+    }
+    .result-company { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mid); margin-bottom: .5rem; }
+    .result-title { font-family: var(--font-head); font-size: 1.15rem; font-weight: 700; margin-bottom: .6rem; line-height: 1.3; color: var(--text); }
+    .result-desc { font-size: .88rem; color: var(--text-mid); line-height: 1.6; }
+    .result-metric { text-align: right; }
+    .result-metric-num {
+      font-family: var(--font-head); font-size: 2.2rem; font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--green) 0%, var(--purple) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1;
+    }
+    .result-metric-label { font-size: .72rem; color: var(--text-mid); margin-top: .25rem; }
+
+    /* ── PRICING ── */
+    #pricing { background: var(--bg-alt); }
+    .pricing-header { text-align: center; margin-bottom: 4rem; }
+    .pricing-header .section-sub { margin: 0 auto; }
+    .pricing-toggle {
+      display: inline-flex; align-items: center; gap: .75rem;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 100px; padding: .4rem .4rem .4rem 1.2rem;
+      margin-top: 1.5rem; cursor: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .pricing-toggle span { font-size: .85rem; font-weight: 500; color: var(--text-mid); }
+    .toggle-btn {
+      background: var(--purple); color: var(--white);
+      border: none; border-radius: 100px;
+      padding: .35rem 1rem; font-size: .75rem; font-weight: 700;
+      cursor: none; letter-spacing: .04em;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .pricing-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 24px; padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      cursor: none; box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .pricing-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.1); }
+    .pricing-card.popular {
+      border-color: var(--purple);
+      background: linear-gradient(180deg, rgba(123,47,255,0.06) 0%, var(--white) 60%);
+      transform: scale(1.02);
+      box-shadow: 0 8px 32px rgba(123,47,255,.2);
+    }
+    .pricing-card.popular:hover { transform: scale(1.02) translateY(-6px); }
+    .popular-badge {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: var(--purple); color: var(--white);
+      font-size: .65rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; padding: .25rem .7rem; border-radius: 100px;
+    }
+    .pricing-plan { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-mid); margin-bottom: .8rem; }
+    .pricing-price {
+      font-family: var(--font-head); font-size: 3rem; font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1; margin-bottom: .4rem; color: var(--text);
+    }
+    .pricing-price sup { font-size: 1.2rem; vertical-align: top; margin-top: .4rem; font-weight: 600; }
+    .pricing-period { font-size: .82rem; color: var(--text-mid); margin-bottom: 1.5rem; }
+    .pricing-divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: .85rem; margin-bottom: 2rem; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: .7rem;
+      font-size: .88rem; color: var(--text-mid); line-height: 1.5;
+    }
+    .pricing-features li .check { color: var(--green); flex-shrink: 0; margin-top: .1rem; }
+    .pricing-features li .x { color: rgba(0,0,0,.18); flex-shrink: 0; margin-top: .1rem; }
+    .btn-plan {
+      width: 100%; padding: .85rem; border-radius: 12px;
+      font-size: .9rem; font-weight: 600; cursor: none; border: none;
+      transition: transform .2s, box-shadow .2s; font-family: var(--font-body);
+    }
+    .btn-plan.outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-plan.outline:hover { border-color: rgba(0,0,0,.3); transform: translateY(-2px); }
+    .btn-plan.solid { background: var(--purple); color: var(--white); }
+    .btn-plan.solid:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(123,47,255,0.4); }
+
+    /* ── CTA SECTION ── */
+    #cta {
+      position: relative; overflow: hidden;
+      padding: 10rem 0;
+      text-align: center;
+      background: linear-gradient(180deg, var(--black) 0%, rgba(123,47,255,0.08) 50%, var(--black) 100%);
+    }
+    #cta-canvas { position: absolute; inset: 0; }
+    .cta-inner { position: relative; z-index: 2; }
+    .cta-title {
+      font-family: var(--font-head);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 1.2rem;
+    }
+    .cta-sub { font-size: 1.1rem; color: var(--muted); margin-bottom: 2.5rem; max-width: 480px; margin-left: auto; margin-right: auto; font-weight: 300; }
+    .cta-form {
+      display: flex; align-items: center; gap: .75rem;
+      max-width: 460px; margin: 0 auto;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      padding: .4rem .4rem .4rem 1.5rem;
+    }
+    .cta-form input {
+      flex: 1; background: none; border: none; outline: none;
+      font-family: var(--font-body); font-size: .9rem; color: var(--white);
+    }
+    .cta-form input::placeholder { color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--text);
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 5rem 0 2.5rem;
+      position: relative; z-index: 2;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+    .footer-brand .nav-logo { font-size: 1.8rem; display: inline-block; margin-bottom: 1rem; }
+    .footer-brand p { font-size: .88rem; color: var(--muted); line-height: 1.7; max-width: 260px; }
+    .footer-social { display: flex; gap: .75rem; margin-top: 1.5rem; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      text-decoration: none; color: var(--muted);
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .social-btn:hover {
+      border-color: rgba(255,255,255,.3);
+      color: var(--white);
+      background: rgba(255,255,255,.05);
+    }
+    .footer-col h4 {
+      font-family: var(--font-head); font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .65rem; }
+    .footer-col ul a {
+      font-size: .88rem; color: rgba(255,255,255,.55);
+      text-decoration: none; transition: color .2s;
+    }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: .78rem; color: var(--muted);
+    }
+    .footer-bottom a { color: var(--muted); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--white); }
+
+    /* ── SCROLL PROGRESS ── */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(to right, var(--purple), var(--cyan));
+      z-index: 10000;
+      transform-origin: left;
+    }
+
+    /* ── REVEAL CLASSES ── */
+    .reveal { opacity: 0; transform: translateY(30px); }
+    .reveal.revealed { opacity: 1; transform: none; transition: opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1); }
+
+    /* ── ROLES GRID ── */
+    .roles-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top:3rem; }
+    .role-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      padding: 1.75rem 1.5rem; display: flex; flex-direction: column; gap: .5rem;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .role-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(123,47,255,.12); }
+    .role-emoji { font-size: 2rem; margin-bottom: .25rem; }
+    .role-name { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .role-meta { font-size: .8rem; color: var(--text-mid); }
+    .role-price { font-size: 1rem; font-weight: 700; color: var(--purple); margin-top: auto; padding-top: .75rem; }
+
+    /* ── VS AGENCY TABLE ── */
+    .vs-table-wrap { overflow-x: auto; margin-top: 3rem; }
+    .vs-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .vs-table th {
+      padding: 1rem 1.25rem; text-align: left; font-family: var(--font-head);
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-mid); border-bottom: 2px solid var(--border);
+    }
+    .vs-table th.rycs-col { color: var(--purple); }
+    .vs-table td { padding: .9rem 1.25rem; border-bottom: 1px solid var(--border); color: var(--text); }
+    .vs-table tr:last-child td { border-bottom: none; }
+    .vs-table td.row-label { font-weight: 600; color: var(--text-mid); font-size: .8rem; }
+    .vs-table td.rycs-col { background: rgba(123,47,255,.04); }
+    .tick-y { color: var(--green); font-size: 1.1rem; font-weight: 700; }
+    .tick-n { color: var(--coral); font-size: 1.1rem; }
+    .tick-mid { color: var(--text-mid); }
+
+    /* ── GUARANTEE SECTION ── */
+    #guarantee {
+      background: linear-gradient(135deg, var(--black) 0%, #0f0820 100%);
+      padding: 7rem 0; text-align: center;
+    }
+    .guarantee-badge {
+      display: inline-block; border: 1px solid rgba(123,47,255,.4);
+      border-radius: 100px; padding: .4rem 1.2rem; font-size: .75rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--purple-light); margin-bottom: 2rem;
+    }
+    .guarantee-title {
+      font-family: var(--font-head); font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .guarantee-title .glow { color: var(--cyan-bright); text-shadow: 0 0 40px rgba(0,229,255,.4); }
+    .guarantee-sub { font-size: 1.1rem; color: rgba(255,255,255,.6); max-width: 520px; margin: 0 auto 2.5rem; }
+    .guarantee-pills { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .g-pill {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 100px; padding: .5rem 1.25rem; font-size: .85rem; color: rgba(255,255,255,.8);
+    }
+
+    /* ── INTAKE FORM ── */
+    .intake-form {
+      display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem;
+      background: rgba(255,255,255,.06); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.12); border-radius: 20px;
+      padding: 1.25rem; max-width: 700px; margin: 0 auto;
+    }
+    .intake-form select, .intake-form input {
+      padding: .75rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.08); color: var(--white); font-size: .9rem;
+      font-family: var(--font-body); outline: none; -webkit-appearance: none;
+    }
+    .intake-form select option { background: #1a1a2e; color: var(--white); }
+    .intake-form select:focus, .intake-form input:focus { border-color: var(--purple); }
+    .intake-form input::placeholder { color: rgba(255,255,255,.4); }
+
+    /* ── PER-HIRE PRICING ── */
+    .per-hire-note {
+      text-align: center; font-size: .85rem; color: var(--text-mid); margin-top: 2rem;
+    }
+    .per-hire-note strong { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .how-grid, .funnel-grid { grid-template-columns: 1fr; }
+      .how-visual { aspect-ratio: 16/9; max-height: 360px; }
+      .features-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .footer-brand { grid-column: span 2; }
+    }
+    @media (max-width: 768px) {
+      .nodemo-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card.accent { grid-column: span 1; }
+      .roles-grid { grid-template-columns: 1fr 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .result-card.featured { grid-column: span 1; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card.popular { transform: none; }
+      .nav-links { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: span 2; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .roles-grid { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .intake-form { grid-template-columns: 1fr; border-radius: 16px; padding: 1rem; }
+      .cta-form { flex-direction: column; border-radius: 16px; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div id="progress"></div>
+
+<!-- Custom Cursor -->
+<div id="cursor">
+  <div class="cursor-ring"></div>
+  <div class="cursor-dot"></div>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">RYCS</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#roles">Roles</a></li>
+    <li><a href="#vs-agency">vs Agency</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#cta" class="btn-primary">Order hires →</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span></span>
+      Pay per hire · No platform · No lock-in
+    </div>
+    <h1 class="hero-title">
+      <span class="line"><span class="word">You need hires.</span></span>
+      <span class="line"><span class="word gradient-word">We deliver them.</span></span>
+      <span class="line"><span class="word">Pay when hired.</span></span>
+    </h1>
+    <p class="hero-sub">
+      Tell us what you need. We run the social ads, screen the candidates, and deliver interview-ready people straight into your ATS. No software to learn. No retainer. No hire, no invoice.
+    </p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-large primary">Order your first hires →</a>
+      <a href="#how" class="btn-large outline">See how it works ↓</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════ MARQUEE ═══════════ -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="platform-pill"><span class="platform-icon">📦</span>Logistics</div>
+    <div class="platform-pill"><span class="platform-icon">🏭</span>Warehouse</div>
+    <div class="platform-pill"><span class="platform-icon">🛒</span>Retail</div>
+    <div class="platform-pill"><span class="platform-icon">🍽️</span>Hospitality</div>
+    <div class="platform-pill"><span class="platform-icon">🎧</span>Customer Service</div>
+    <div class="platform-pill"><span class="platform-icon">📈</span>Sales</div>
+    <div class="platform-pill"><span class="platform-icon">📣</span>Marketing</div>
+    <div class="platform-pill"><span class="platform-icon">💶</span>Finance</div>
+    <div class="platform-pill"><span class="platform-icon">💻</span>Tech</div>
+    <div class="platform-pill"><span class="platform-icon">🏥</span>Care</div>
+    <div class="platform-pill"><span class="platform-icon">🚚</span>Drivers</div>
+    <div class="platform-pill"><span class="platform-icon">⚙️</span>Operations</div>
+    <div class="platform-pill"><span class="platform-icon">📦</span>Logistics</div>
+    <div class="platform-pill"><span class="platform-icon">🏭</span>Warehouse</div>
+    <div class="platform-pill"><span class="platform-icon">🛒</span>Retail</div>
+    <div class="platform-pill"><span class="platform-icon">🍽️</span>Hospitality</div>
+    <div class="platform-pill"><span class="platform-icon">🎧</span>Customer Service</div>
+    <div class="platform-pill"><span class="platform-icon">📈</span>Sales</div>
+    <div class="platform-pill"><span class="platform-icon">💻</span>Tech</div>
+    <div class="platform-pill"><span class="platform-icon">🚚</span>Drivers</div>
+  </div>
+</div>
+
+<!-- ═══════════ STATS ═══════════ -->
+<section id="stats" class="section-pad">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell reveal">
+        <div class="stat-number" data-count="12400" data-suffix="+">0</div>
+        <div class="stat-label">Hires delivered<br/>by RYCS</div>
+      </div>
+      <div class="stat-cell reveal" style="transition-delay:.1s">
+        <div class="stat-number" data-count="387" data-suffix="">0</div>
+        <div class="stat-label">Average cost<br/>per hire (€)</div>
+      </div>
+      <div class="stat-cell reveal" style="transition-delay:.2s">
+        <div class="stat-number" data-count="11" data-suffix=" days">0</div>
+        <div class="stat-label">Average time<br/>to first interview</div>
+      </div>
+      <div class="stat-cell reveal" style="transition-delay:.3s">
+        <div class="stat-number" data-count="4500" data-suffix="">0</div>
+        <div class="stat-label">Avg agency fee (€)<br/>we replace</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NO DEMO STRIP ═══════════ -->
+<section id="nodemo">
+  <div class="container">
+    <div class="nodemo-grid">
+      <div class="nodemo-cell reveal">
+        <div class="nodemo-icon">🚫</div>
+        <div>
+          <div class="nodemo-title"><span class="nodemo-strike">Platform to learn</span><br/><span class="nodemo-good">Tell us what you need.</span></div>
+          <div class="nodemo-desc">No dashboards to configure, no ad accounts to connect. You fill in a brief — role, location, volume — and we handle everything.</div>
+        </div>
+      </div>
+      <div class="nodemo-cell reveal" style="transition-delay:.07s">
+        <div class="nodemo-icon">🚫</div>
+        <div>
+          <div class="nodemo-title"><span class="nodemo-strike">Setup &amp; onboarding</span><br/><span class="nodemo-good">Live within 24 hours.</span></div>
+          <div class="nodemo-desc">We launch your campaigns the same day. Candidates start appearing in your ATS within the first 48 hours — no training, no waiting.</div>
+        </div>
+      </div>
+      <div class="nodemo-cell reveal" style="transition-delay:.14s">
+        <div class="nodemo-icon">🚫</div>
+        <div>
+          <div class="nodemo-title"><span class="nodemo-strike">Pay regardless</span><br/><span class="nodemo-good">Only pay per hire.</span></div>
+          <div class="nodemo-desc">Zero subscription. Zero retainer. You pay a fixed fee per hire delivered — nothing if we don't fill the role. No hire, no invoice.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how" class="section-pad">
+  <div class="container">
+    <div class="how-grid">
+      <div>
+        <span class="section-tag reveal">How it works</span>
+        <h2 class="section-title reveal">Three steps.<br/>Interview-ready candidates.</h2>
+        <p class="section-sub reveal">We handle everything between "we need someone" and "they're in your calendar." You just interview and decide.</p>
+
+        <ul class="steps-list" style="margin-top:2.5rem">
+          <li class="step-item reveal">
+            <div class="step-num">01</div>
+            <div>
+              <div class="step-title">Tell us what you need</div>
+              <div class="step-desc">Fill in a 2-minute brief: role type, city, volume, and start date. That's it. No integration setup, no ad account, no platform to learn.</div>
+            </div>
+          </li>
+          <li class="step-item reveal" style="transition-delay:.08s">
+            <div class="step-num">02</div>
+            <div>
+              <div class="step-title">We run everything</div>
+              <div class="step-desc">Our team launches targeted social campaigns across LinkedIn, Instagram, TikTok and Facebook. AI creates the ads, screens the applicants, and filters out unqualified leads — all without you lifting a finger.</div>
+            </div>
+          </li>
+          <li class="step-item reveal" style="transition-delay:.16s">
+            <div class="step-num">03</div>
+            <div>
+              <div class="step-title">Hires land in your ATS</div>
+              <div class="step-desc">Interview-ready candidates sync directly into your ATS or inbox. You review, you choose, you hire. We invoice only for the hires that happen.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mock Order Card -->
+      <div class="how-visual reveal" style="transition-delay:.2s">
+        <div class="how-visual-inner">
+          <div class="mock-topbar">
+            <div class="mock-dots">
+              <div class="mock-dot"></div>
+              <div class="mock-dot"></div>
+              <div class="mock-dot"></div>
+            </div>
+            <div class="mock-title-bar">RYCS · Active Order · DHL Rotterdam</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="mock-card-label">Role ordered</div>
+            <div class="mock-card-val" style="font-size:1rem">Warehouse Operative · Rotterdam</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="mock-card-label">Candidates delivered this week</div>
+            <div class="mock-card-val up">↑ 18 interview-ready</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="mock-card-label">Delivery progress</div>
+            <div class="mock-bar-row">
+              <div class="mock-bar-item">
+                <span class="mock-bar-label">Hires ordered</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:100%;background:var(--purple)"></div></div>
+              </div>
+              <div class="mock-bar-item">
+                <span class="mock-bar-label">Screened &amp; qualified</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:72%;background:var(--cyan)"></div></div>
+              </div>
+              <div class="mock-bar-item">
+                <span class="mock-bar-label">Hired</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:40%;background:var(--green)"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="mock-card-label">Cost so far</div>
+            <div class="mock-card-val" style="color:var(--green)">€ 1,548 · 4 hires</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ROLES ═══════════ -->
+<section id="roles" class="section-pad" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="features-header">
+      <div>
+        <span class="section-tag reveal">Role types</span>
+        <h2 class="section-title reveal">We deliver across<br/>every volume role</h2>
+      </div>
+      <p class="section-sub reveal">From single replacements to 200-person ramp-ups — same fixed price per hire, no matter the volume.</p>
+    </div>
+
+    <div class="roles-grid">
+      <div class="role-card reveal">
+        <div class="role-emoji">📦</div>
+        <div class="role-name">Logistics &amp; Warehouse</div>
+        <div class="role-meta">Avg delivery: 8 days · 3,200+ hired</div>
+        <div class="role-price">from €299 / hire</div>
+      </div>
+      <div class="role-card reveal" style="transition-delay:.05s">
+        <div class="role-emoji">🛒</div>
+        <div class="role-name">Retail &amp; Hospitality</div>
+        <div class="role-meta">Avg delivery: 9 days · 2,800+ hired</div>
+        <div class="role-price">from €299 / hire</div>
+      </div>
+      <div class="role-card reveal" style="transition-delay:.1s">
+        <div class="role-emoji">🎧</div>
+        <div class="role-name">Customer Service</div>
+        <div class="role-meta">Avg delivery: 10 days · 1,900+ hired</div>
+        <div class="role-price">from €299 / hire</div>
+      </div>
+      <div class="role-card reveal" style="transition-delay:.15s">
+        <div class="role-emoji">📈</div>
+        <div class="role-name">Sales &amp; Marketing</div>
+        <div class="role-meta">Avg delivery: 12 days · 1,100+ hired</div>
+        <div class="role-price">from €449 / hire</div>
+      </div>
+      <div class="role-card reveal" style="transition-delay:.2s">
+        <div class="role-emoji">💻</div>
+        <div class="role-name">Tech &amp; Digital</div>
+        <div class="role-meta">Avg delivery: 14 days · 680+ hired</div>
+        <div class="role-price">from €649 / hire</div>
+      </div>
+      <div class="role-card reveal" style="transition-delay:.25s">
+        <div class="role-emoji">🚚</div>
+        <div class="role-name">Drivers &amp; Operations</div>
+        <div class="role-meta">Avg delivery: 11 days · 1,400+ hired</div>
+        <div class="role-price">from €299 / hire</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VS AGENCY ═══════════ -->
+<section id="vs-agency" class="section-pad">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:1rem">
+      <span class="section-tag reveal">RYCS vs Agency</span>
+      <h2 class="section-title reveal">Same outcome.<br/>A fraction of the cost.</h2>
+      <p class="section-sub reveal" style="max-width:560px;margin:.75rem auto 0">Agencies charge 15–25% of first-year salary. We charge a flat fee per hire — and you only pay when it works.</p>
+    </div>
+
+    <div class="vs-table-wrap reveal">
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th style="width:30%">Feature</th>
+            <th>Large Agency</th>
+            <th>Boutique Headhunter</th>
+            <th class="rycs-col">RYCS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Cost per hire</td>
+            <td>€3,500–€8,000</td>
+            <td>€5,000–€15,000</td>
+            <td class="rycs-col"><span class="tick-y">€299–€649</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Time to first candidate</td>
+            <td>1–3 weeks</td>
+            <td>2–4 weeks</td>
+            <td class="rycs-col"><span class="tick-y">24–48 hours</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Reach passive candidates</td>
+            <td><span class="tick-mid">Limited</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Social-first</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Pay only if hired</td>
+            <td><span class="tick-n">✗ Retainer</span></td>
+            <td><span class="tick-n">✗ Retainer</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Always</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Volume scaling</td>
+            <td><span class="tick-mid">Slow</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Same-day</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Contract required</td>
+            <td><span class="tick-n">✗ 3–6 months</span></td>
+            <td><span class="tick-n">✗ Per-search</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ None</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Transparent pricing</td>
+            <td><span class="tick-n">✗</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Fixed on site</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">SMB accessible</td>
+            <td><span class="tick-n">✗</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ From 1 hire</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GUARANTEE ═══════════ -->
+<section id="guarantee">
+  <div class="container">
+    <div class="guarantee-badge reveal">Our promise</div>
+    <h2 class="guarantee-title reveal">No hire.<br/><span class="glow">No invoice.</span></h2>
+    <p class="guarantee-sub reveal">We put skin in the game. If we don't deliver an interview-ready candidate that you hire, you pay nothing. Zero risk, zero retainer.</p>
+    <div class="guarantee-pills reveal">
+      <div class="g-pill">✓ Fixed price per hire</div>
+      <div class="g-pill">✓ No platform subscription</div>
+      <div class="g-pill">✓ Cancel after any order</div>
+      <div class="g-pill">✓ ATS delivery included</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section id="testimonials" class="section-pad">
+  <div class="container">
+    <div class="testimonials-header">
+      <span class="section-tag reveal">What clients say</span>
+      <h2 class="section-title reveal">Real orders.<br/>Real hires delivered.</h2>
+    </div>
+  </div>
+  <div class="testimonials-track-wrap">
+    <div class="testimonials-track" id="testi-track">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We ordered 40 warehouse operators in Rotterdam. RYCS delivered 43 hires in 3 weeks at €312 each. Our agency was quoting €4,800 per person. The math is insane."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">JD</div>
+          <div><div class="testi-name">Julie Desmet</div><div class="testi-role">Talent Ops Lead · DHL</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We needed 12 customer service reps across 3 cities. I submitted the brief on Monday. By Thursday we had 28 qualified candidates in our ATS. We hired 14."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">SV</div>
+          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of People · Coolblue</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our previous agency took 6 weeks per hire and charged 18% salary. RYCS filled the same profile in 11 days at a flat €449. We've switched everything over."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">HR Director · REWE Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"I was sceptical — no demo, no sales call, flat fee. Then 18 candidates showed up in my inbox 48 hours after submitting the brief. I'm a believer now."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">TP</div>
+          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Hiring Manager · Deloitte</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We scaled from 10 to 80 drivers across the Netherlands in one quarter. RYCS just kept delivering. No capacity issues, no renegotiation — we just ordered more."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">AH</div>
+          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">COO · Flink</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our recruitment agency relationships were expensive and slow. RYCS replaces them entirely for volume roles — and we only pay when someone actually starts."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">RN</div>
+          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Head of HR · Randstad NL</div></div>
+        </div>
+      </div>
+      <!-- Duplicates for infinite loop -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We ordered 40 warehouse operators in Rotterdam. RYCS delivered 43 hires in 3 weeks at €312 each. Our agency was quoting €4,800 per person. The math is insane."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">JD</div>
+          <div><div class="testi-name">Julie Desmet</div><div class="testi-role">Talent Ops Lead · DHL</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We needed 12 customer service reps across 3 cities. I submitted the brief on Monday. By Thursday we had 28 qualified candidates in our ATS. We hired 14."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">SV</div>
+          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of People · Coolblue</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our previous agency took 6 weeks per hire and charged 18% salary. RYCS filled the same profile in 11 days at a flat €449. We've switched everything over."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">HR Director · REWE Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"I was sceptical — no demo, no sales call, flat fee. Then 18 candidates showed up in my inbox 48 hours after submitting the brief. I'm a believer now."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">TP</div>
+          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Hiring Manager · Deloitte</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We scaled from 10 to 80 drivers across the Netherlands in one quarter. RYCS just kept delivering. No capacity issues, no renegotiation — we just ordered more."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">AH</div>
+          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">COO · Flink</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our recruitment agency relationships were expensive and slow. RYCS replaces them entirely for volume roles — and we only pay when someone actually starts."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">RN</div>
+          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Head of HR · Randstad NL</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRICING ═══════════ -->
+<section id="pricing" class="section-pad" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="pricing-header">
+      <span class="section-tag reveal">Pricing</span>
+      <h2 class="section-title reveal">One price.<br/>Per hire delivered.</h2>
+      <p class="section-sub reveal">No subscription. No setup fee. You pay only when a hire happens.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-plan">Volume</div>
+        <div class="pricing-price"><sup>€</sup>299</div>
+        <div class="pricing-period">per hire delivered</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Logistics, Warehouse, Retail</li>
+          <li><span class="check">✓</span> Hospitality, Customer Service</li>
+          <li><span class="check">✓</span> Drivers &amp; Operations</li>
+          <li><span class="check">✓</span> Delivered within 8–11 days</li>
+          <li><span class="check">✓</span> ATS sync included</li>
+          <li><span class="check">✓</span> Volume orders (10+) priority</li>
+          <li><span class="x">✗</span> Senior / specialist profiles</li>
+        </ul>
+        <a href="#cta" class="btn-plan outline">Order now</a>
+      </div>
+
+      <div class="pricing-card popular reveal" style="transition-delay:.1s">
+        <div class="popular-badge">Most ordered</div>
+        <div class="pricing-plan">Professional</div>
+        <div class="pricing-price"><sup>€</sup>449</div>
+        <div class="pricing-period">per hire delivered</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Sales, Marketing, Finance</li>
+          <li><span class="check">✓</span> Team leads &amp; supervisors</li>
+          <li><span class="check">✓</span> Mid-level management</li>
+          <li><span class="check">✓</span> Delivered within 10–14 days</li>
+          <li><span class="check">✓</span> ATS sync + pre-screen notes</li>
+          <li><span class="check">✓</span> Replacement guarantee (30d)</li>
+          <li><span class="check">✓</span> Dedicated account manager</li>
+        </ul>
+        <a href="#cta" class="btn-plan solid">Order now</a>
+      </div>
+
+      <div class="pricing-card reveal" style="transition-delay:.2s">
+        <div class="pricing-plan">Specialist</div>
+        <div class="pricing-price"><sup>€</sup>649</div>
+        <div class="pricing-period">per hire delivered</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Tech, Engineering, Data</li>
+          <li><span class="check">✓</span> Senior professionals</li>
+          <li><span class="check">✓</span> Hard-to-fill profiles</li>
+          <li><span class="check">✓</span> Delivered within 14–21 days</li>
+          <li><span class="check">✓</span> Deep pre-screen + portfolio</li>
+          <li><span class="check">✓</span> Replacement guarantee (60d)</li>
+          <li><span class="check">✓</span> Priority delivery SLA</li>
+        </ul>
+        <a href="#cta" class="btn-plan outline">Order now</a>
+      </div>
+    </div>
+
+    <p class="per-hire-note reveal">
+      <strong>All plans:</strong> No subscription · No setup fee · No minimum order · Cancel after any hire ·
+      <strong>vs agency average: €4,500+</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section id="cta">
+  <canvas id="cta-canvas"></canvas>
+  <div class="container cta-inner">
+    <span class="section-tag reveal">Start hiring</span>
+    <h2 class="cta-title reveal">Order your first hires.<br/>Live within 24 hours.</h2>
+    <p class="cta-sub reveal">Tell us what you need. We deliver interview-ready candidates straight into your ATS. No hire? No invoice.</p>
+    <div class="intake-form reveal">
+      <select>
+        <option value="" disabled selected>Role type</option>
+        <option>Logistics / Warehouse</option>
+        <option>Retail / Hospitality</option>
+        <option>Customer Service</option>
+        <option>Sales / Marketing</option>
+        <option>Tech / Digital</option>
+        <option>Drivers / Operations</option>
+        <option>Other</option>
+      </select>
+      <input type="text" placeholder="City or region" />
+      <a href="#" class="btn-primary" style="white-space:nowrap">Get started →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">RYCS</a>
+        <p>Hire delivery for teams that don't have time to recruit. Pay per hire. No platform. No lock-in.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn" title="LinkedIn">in</a>
+          <a href="#" class="social-btn" title="X/Twitter">𝕏</a>
+          <a href="#" class="social-btn" title="Instagram">📸</a>
+          <a href="#" class="social-btn" title="TikTok">🎵</a>
+          <a href="#" class="social-btn" title="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>How it works</h4>
+        <ul>
+          <li><a href="#how">The process</a></li>
+          <li><a href="#roles">Role types</a></li>
+          <li><a href="#vs-agency">vs Agency</a></li>
+          <li><a href="#guarantee">Our guarantee</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Role types</h4>
+        <ul>
+          <li><a href="#">Logistics &amp; Warehouse</a></li>
+          <li><a href="#">Retail &amp; Hospitality</a></li>
+          <li><a href="#">Customer Service</a></li>
+          <li><a href="#">Sales &amp; Marketing</a></li>
+          <li><a href="#">Tech &amp; Digital</a></li>
+          <li><a href="#">Drivers &amp; Operations</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Case studies</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Help center</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 RYCS B.V. All rights reserved.</span>
+      <span>
+        <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+        <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+        <a href="#">Cookie Settings</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════════ -->
+<script>
+/* ── GSAP Setup (graceful when CDN unavailable) ── */
+const HAS_GSAP = typeof gsap !== 'undefined';
+const HAS_THREE = typeof THREE !== 'undefined';
+if (HAS_GSAP && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+if (!HAS_GSAP) {
+  // No GSAP: show hero content immediately via CSS transitions
+  document.addEventListener('DOMContentLoaded', () => {
+    ['.hero-badge','.hero-sub','.hero-actions','.hero-scroll'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) { el.style.transition = 'opacity .8s'; el.style.opacity = 1; }
+    });
+  });
+}
+
+/* ── Cursor ── */
+const cursor = document.getElementById('cursor');
+const dot = cursor.querySelector('.cursor-dot');
+const ring = cursor.querySelector('.cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+/* ── Scroll Progress ── */
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  progress.style.width = (pct * 100) + '%';
+});
+
+/* ── THREE.JS Hero ── */
+(function() {
+  if (!HAS_THREE) return;
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 80;
+
+  const COUNT = 200;
+  const positions = new Float32Array(COUNT * 3);
+  const velocities = [];
+  for (let i = 0; i < COUNT; i++) {
+    positions[i*3]   = (Math.random() - 0.5) * 200;
+    positions[i*3+1] = (Math.random() - 0.5) * 120;
+    positions[i*3+2] = (Math.random() - 0.5) * 80;
+    velocities.push({
+      x: (Math.random() - 0.5) * 0.05,
+      y: (Math.random() - 0.5) * 0.05,
+      z: (Math.random() - 0.5) * 0.02
+    });
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    color: 0x7B2FFF, size: 1.2, transparent: true, opacity: 0.7,
+    sizeAttenuation: true
+  });
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  // Lines between close nodes
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x7B2FFF, transparent: true, opacity: 0.15 });
+  const lineGeo = new THREE.BufferGeometry();
+  const linePositions = new Float32Array(COUNT * COUNT * 6);
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  const lines = new THREE.LineSegments(lineGeo, lineMat);
+  scene.add(lines);
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 0.2;
+  });
+
+  let lineIdx = 0;
+  function updateLines() {
+    lineIdx = 0;
+    const pos = geo.attributes.position.array;
+    const lp = lineGeo.attributes.position.array;
+    const threshold = 35;
+    for (let i = 0; i < COUNT; i++) {
+      for (let j = i + 1; j < COUNT; j++) {
+        const dx = pos[i*3] - pos[j*3];
+        const dy = pos[i*3+1] - pos[j*3+1];
+        const dz = pos[i*3+2] - pos[j*3+2];
+        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < threshold && lineIdx < linePositions.length - 6) {
+          lp[lineIdx++] = pos[i*3]; lp[lineIdx++] = pos[i*3+1]; lp[lineIdx++] = pos[i*3+2];
+          lp[lineIdx++] = pos[j*3]; lp[lineIdx++] = pos[j*3+1]; lp[lineIdx++] = pos[j*3+2];
+        }
+      }
+    }
+    lineGeo.attributes.position.needsUpdate = true;
+    lineGeo.setDrawRange(0, lineIdx / 3);
+  }
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.005;
+    const pos = geo.attributes.position.array;
+    for (let i = 0; i < COUNT; i++) {
+      pos[i*3]   += velocities[i].x;
+      pos[i*3+1] += velocities[i].y;
+      pos[i*3+2] += velocities[i].z;
+      if (Math.abs(pos[i*3]) > 100) velocities[i].x *= -1;
+      if (Math.abs(pos[i*3+1]) > 60) velocities[i].y *= -1;
+      if (Math.abs(pos[i*3+2]) > 40) velocities[i].z *= -1;
+    }
+    geo.attributes.position.needsUpdate = true;
+    updateLines();
+    scene.rotation.y = mouseX + Math.sin(t * 0.3) * 0.05;
+    scene.rotation.x = mouseY + Math.cos(t * 0.2) * 0.03;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+/* ── THREE.JS CTA Particles ── */
+(function() {
+  if (!HAS_THREE) return;
+  const canvas = document.getElementById('cta-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const section = document.getElementById('cta');
+
+  function resize() {
+    renderer.setSize(section.offsetWidth, section.offsetHeight);
+    camera.aspect = section.offsetWidth / section.offsetHeight;
+    camera.updateProjectionMatrix();
+  }
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 500);
+  camera.position.z = 60;
+  resize();
+
+  const COUNT = 80;
+  const positions = new Float32Array(COUNT * 3);
+  for (let i = 0; i < COUNT; i++) {
+    positions[i*3]   = (Math.random() - 0.5) * 150;
+    positions[i*3+1] = (Math.random() - 0.5) * 80;
+    positions[i*3+2] = (Math.random() - 0.5) * 40;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({ color: 0x00E5FF, size: 1.5, transparent: true, opacity: 0.5 });
+  scene.add(new THREE.Points(geo, mat));
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.006;
+    scene.rotation.y = Math.sin(t * 0.2) * 0.2;
+    scene.rotation.x = Math.cos(t * 0.15) * 0.1;
+    renderer.render(scene, camera);
+  }
+  animate();
+  window.addEventListener('resize', resize);
+})();
+
+/* ── GSAP Hero Reveal ── */
+window.addEventListener('load', () => {
+  if (!HAS_GSAP) return;
+  const tl = gsap.timeline({ delay: 0.2 });
+  tl.to('.hero-badge', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' })
+    .fromTo('.hero-title .word',
+      { y: '110%', opacity: 0 },
+      { y: '0%', opacity: 1, duration: 0.9, stagger: 0.12, ease: 'expo.out' },
+      '-=0.2'
+    )
+    .to('.hero-sub', { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.4')
+    .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, '-=0.3')
+    .to('.hero-scroll', { opacity: 1, duration: 0.5 }, '-=0.1');
+});
+
+/* ── Scroll Reveals (IntersectionObserver — robust everywhere) ── */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ── Animated Counter ── */
+function runCounter(el) {
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const isDecimal = target % 1 !== 0;
+  const start = performance.now(), dur = 2000;
+  function frame(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = target * eased;
+    el.textContent = isDecimal
+      ? val.toFixed(1) + suffix
+      : Math.round(val).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      runCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
+
+/* ── Feature cards mouse glow ── */
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+});
+
+/* ── Nav: dark over hero, light over content ── */
+(function() {
+  const nav = document.getElementById('nav');
+  const hero = document.getElementById('hero');
+  function updateNav() {
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    if (heroBottom < 10) {
+      nav.classList.add('light');
+      nav.style.background = '';
+    } else {
+      nav.classList.remove('light');
+      nav.style.background = window.scrollY < 20 ? 'rgba(8,8,16,0.6)' : 'rgba(8,8,16,0.85)';
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+})();
+
+/* ── Parallax hero glow ── */
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  document.querySelector('.hero-glow').style.transform = `translateY(${y * 0.3}px)`;
+});
+
+/* ── Magnetic buttons ── */
+document.querySelectorAll('.btn-large, .btn-primary').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width/2) * 0.25;
+    const dy = (e.clientY - r.top - r.height/2) * 0.25;
+    btn.style.transform = `translate(${dx}px, ${dy}px) translateY(-3px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+</script>
+</body>
+</html>
