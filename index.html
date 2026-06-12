@@ -423,6 +423,62 @@
     .mock-ch.sc { color: #FFFC00; border-color: rgba(255,252,0,.4); background: rgba(255,252,0,.07); }
     .mock-ch.yt { color: #FF0000; border-color: rgba(255,0,0,.4); background: rgba(255,0,0,.1); }
 
+    /* ── HIRE FUNNEL ── */
+    #funnel { background: var(--black); }
+    .funnel-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .funnel-visual {
+      display: flex; flex-direction: column; gap: .75rem;
+    }
+    .funnel-stage {
+      position: relative;
+      border-radius: 14px;
+      padding: 1.1rem 1.5rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: transform .3s, border-color .3s;
+    }
+    .funnel-stage:hover { transform: translateX(6px); border-color: rgba(0,229,255,.35); }
+    .funnel-stage-label { font-size: .85rem; font-weight: 600; }
+    .funnel-stage-sub { font-size: .72rem; color: var(--muted); margin-top: .15rem; }
+    .funnel-stage-num {
+      font-family: var(--font-head); font-weight: 800; font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .funnel-stage:nth-child(1) { width: 100%; }
+    .funnel-stage:nth-child(2) { width: 88%; }
+    .funnel-stage:nth-child(3) { width: 74%; }
+    .funnel-stage:nth-child(4) { width: 60%; }
+    .funnel-stage:nth-child(5) {
+      width: 48%;
+      background: linear-gradient(135deg, rgba(0,255,148,0.12) 0%, rgba(0,229,255,0.08) 100%);
+      border-color: rgba(0,255,148,.35);
+    }
+    .funnel-stage:nth-child(5) .funnel-stage-num { color: var(--green); }
+    .funnel-alert {
+      margin-top: .25rem;
+      border: 1px dashed rgba(255,71,87,.4);
+      background: rgba(255,71,87,.07);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      font-size: .8rem; color: #FF8A94; line-height: 1.6;
+    }
+    .funnel-alert strong { color: var(--coral); }
+    .funnel-points { list-style: none; display: flex; flex-direction: column; gap: 1.4rem; margin-top: 2.2rem; }
+    .funnel-points li { display: flex; gap: 1rem; align-items: flex-start; }
+    .funnel-point-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: rgba(0,255,148,.07);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .funnel-point-title { font-weight: 600; font-size: .95rem; margin-bottom: .25rem; }
+    .funnel-point-desc { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+
     /* ── FEATURES ── */
     #features {
       background: var(--black);
@@ -791,7 +847,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .how-grid { grid-template-columns: 1fr; }
+      .how-grid, .funnel-grid { grid-template-columns: 1fr; }
       .how-visual { aspect-ratio: 16/9; max-height: 360px; }
       .features-header { grid-template-columns: 1fr; gap: 1.5rem; }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
@@ -861,7 +917,7 @@
       <span class="line"><span class="word">Win talent.</span></span>
     </h1>
     <p class="hero-sub">
-      RYCS turns every job opening into a high-performance social ad campaign — automatically distributed across LinkedIn, Instagram, TikTok, Facebook & more.
+      RYCS turns every job opening into a high-performance social ad campaign — and measures every euro through to the hire, not just the click.
     </p>
     <div class="hero-actions">
       <a href="#cta" class="btn-large primary">Start for free</a>
@@ -905,12 +961,12 @@
         <div class="stat-label">Companies advertising<br/>with RYCS</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.1s">
-        <div class="stat-number" data-count="68" data-suffix="%">0%</div>
-        <div class="stat-label">Average reduction<br/>in cost-per-apply</div>
+        <div class="stat-number" data-count="58" data-suffix="%">0%</div>
+        <div class="stat-label">Average reduction<br/>in cost-per-hire</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.2s">
-        <div class="stat-number" data-count="4.2" data-suffix="x">0x</div>
-        <div class="stat-label">More applications<br/>vs job boards alone</div>
+        <div class="stat-number" data-count="3.1" data-suffix="x">0x</div>
+        <div class="stat-label">More hires per euro<br/>vs job boards alone</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.3s">
         <div class="stat-number" data-count="12" data-suffix="M+">0</div>
@@ -955,7 +1011,7 @@
             <div class="step-num">04</div>
             <div>
               <div class="step-title">Optimise and close the role</div>
-              <div class="step-desc">Real-time analytics show you cost-per-apply, quality scores and application velocity — with automated budget shifts to top performers.</div>
+              <div class="step-desc">Real-time analytics track every candidate from impression to signed contract — cost-per-hire, funnel drop-off, and automated budget shifts to top performers.</div>
             </div>
           </li>
         </ul>
@@ -979,8 +1035,8 @@
           </div>
 
           <div class="mock-card">
-            <div class="mock-card-label">Cost per apply</div>
-            <div class="mock-card-val" style="color:var(--cyan)">€ 4.72</div>
+            <div class="mock-card-label">Cost per hire</div>
+            <div class="mock-card-val" style="color:var(--cyan)">€ 387</div>
           </div>
 
           <div class="mock-card">
@@ -1016,6 +1072,84 @@
               <span class="mock-ch yt">YouTube</span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HIRE FUNNEL ═══════════ -->
+<section id="funnel" class="section-pad">
+  <div class="container">
+    <div class="funnel-grid">
+      <div>
+        <span class="section-tag reveal" style="color:var(--green)">Measured to the hire</span>
+        <h2 class="section-title reveal">You're judged on hires.<br/>So that's what we measure.</h2>
+        <p class="section-sub reveal">Most ad platforms stop counting at the click. RYCS syncs with your ATS and tracks every candidate from first impression to signed contract — so you see exactly what a hire costs, and exactly where your funnel leaks.</p>
+
+        <ul class="funnel-points">
+          <li class="reveal">
+            <div class="funnel-point-icon">🎯</div>
+            <div>
+              <div class="funnel-point-title">Cost-per-hire, not cost-per-click</div>
+              <div class="funnel-point-desc">Budgets optimise toward the channels and creatives that produce hires — verified against your ATS, not platform-reported clicks.</div>
+            </div>
+          </li>
+          <li class="reveal" style="transition-delay:.08s">
+            <div class="funnel-point-icon">🔍</div>
+            <div>
+              <div class="funnel-point-title">See where candidates drop off</div>
+              <div class="funnel-point-desc">Slow follow-up? Broken application form? RYCS flags exactly where qualified candidates leak out of your process — before they cost you the hire.</div>
+            </div>
+          </li>
+          <li class="reveal" style="transition-delay:.16s">
+            <div class="funnel-point-icon">🤝</div>
+            <div>
+              <div class="funnel-point-title">Aligned incentives, optional per-hire pricing</div>
+              <div class="funnel-point-desc">On Growth and Enterprise plans you can switch to hybrid per-hire pricing. We only win when you hire — the way it should be.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="funnel-visual reveal" style="transition-delay:.15s">
+        <div class="funnel-stage">
+          <div>
+            <div class="funnel-stage-label">Reached</div>
+            <div class="funnel-stage-sub">Impressions across all channels</div>
+          </div>
+          <div class="funnel-stage-num">412K</div>
+        </div>
+        <div class="funnel-stage">
+          <div>
+            <div class="funnel-stage-label">Engaged</div>
+            <div class="funnel-stage-sub">Clicked through to your vacancy</div>
+          </div>
+          <div class="funnel-stage-num">18.4K</div>
+        </div>
+        <div class="funnel-stage">
+          <div>
+            <div class="funnel-stage-label">Applied</div>
+            <div class="funnel-stage-sub">Completed applications</div>
+          </div>
+          <div class="funnel-stage-num">1,284</div>
+        </div>
+        <div class="funnel-stage">
+          <div>
+            <div class="funnel-stage-label">Interviewed</div>
+            <div class="funnel-stage-sub">Synced from your ATS</div>
+          </div>
+          <div class="funnel-stage-num">96</div>
+        </div>
+        <div class="funnel-stage">
+          <div>
+            <div class="funnel-stage-label">Hired</div>
+            <div class="funnel-stage-sub">€387 per hire this quarter</div>
+          </div>
+          <div class="funnel-stage-num">23</div>
+        </div>
+        <div class="funnel-alert">
+          <strong>⚠ Funnel leak detected:</strong> 38% of qualified applicants received no response within 5 days. Estimated 9 hires lost. <u>Enable auto-nudge →</u>
         </div>
       </div>
     </div>
@@ -1059,7 +1193,7 @@
       <div class="feature-card reveal" id="fc5" style="transition-delay:.2s">
         <div class="feature-icon">💰</div>
         <div class="feature-name">Budget Optimiser</div>
-        <div class="feature-desc">AI reallocates spend in real-time to channels and creative variants delivering the lowest cost-per-apply.</div>
+        <div class="feature-desc">AI reallocates spend in real-time to channels and creative variants delivering the lowest cost-per-hire — not just clicks.</div>
         <span class="feature-tag ai">AI-Powered</span>
       </div>
       <div class="feature-card reveal" id="fc6" style="transition-delay:.25s">
