@@ -797,6 +797,81 @@
     .reveal { opacity: 0; transform: translateY(30px); }
     .reveal.revealed { opacity: 1; transform: none; transition: opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1); }
 
+    /* ── ROLES GRID ── */
+    .roles-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top:3rem; }
+    .role-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      padding: 1.75rem 1.5rem; display: flex; flex-direction: column; gap: .5rem;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .role-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(123,47,255,.12); }
+    .role-emoji { font-size: 2rem; margin-bottom: .25rem; }
+    .role-name { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .role-meta { font-size: .8rem; color: var(--text-mid); }
+    .role-price { font-size: 1rem; font-weight: 700; color: var(--purple); margin-top: auto; padding-top: .75rem; }
+
+    /* ── VS AGENCY TABLE ── */
+    .vs-table-wrap { overflow-x: auto; margin-top: 3rem; }
+    .vs-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .vs-table th {
+      padding: 1rem 1.25rem; text-align: left; font-family: var(--font-head);
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-mid); border-bottom: 2px solid var(--border);
+    }
+    .vs-table th.rycs-col { color: var(--purple); }
+    .vs-table td { padding: .9rem 1.25rem; border-bottom: 1px solid var(--border); color: var(--text); }
+    .vs-table tr:last-child td { border-bottom: none; }
+    .vs-table td.row-label { font-weight: 600; color: var(--text-mid); font-size: .8rem; }
+    .vs-table td.rycs-col { background: rgba(123,47,255,.04); }
+    .tick-y { color: var(--green); font-size: 1.1rem; font-weight: 700; }
+    .tick-n { color: var(--coral); font-size: 1.1rem; }
+    .tick-mid { color: var(--text-mid); }
+
+    /* ── GUARANTEE SECTION ── */
+    #guarantee {
+      background: linear-gradient(135deg, var(--black) 0%, #0f0820 100%);
+      padding: 7rem 0; text-align: center;
+    }
+    .guarantee-badge {
+      display: inline-block; border: 1px solid rgba(123,47,255,.4);
+      border-radius: 100px; padding: .4rem 1.2rem; font-size: .75rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--purple-light); margin-bottom: 2rem;
+    }
+    .guarantee-title {
+      font-family: var(--font-head); font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .guarantee-title .glow { color: var(--cyan-bright); text-shadow: 0 0 40px rgba(0,229,255,.4); }
+    .guarantee-sub { font-size: 1.1rem; color: rgba(255,255,255,.6); max-width: 520px; margin: 0 auto 2.5rem; }
+    .guarantee-pills { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .g-pill {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 100px; padding: .5rem 1.25rem; font-size: .85rem; color: rgba(255,255,255,.8);
+    }
+
+    /* ── INTAKE FORM ── */
+    .intake-form {
+      display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem;
+      background: rgba(255,255,255,.06); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.12); border-radius: 20px;
+      padding: 1.25rem; max-width: 700px; margin: 0 auto;
+    }
+    .intake-form select, .intake-form input {
+      padding: .75rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.08); color: var(--white); font-size: .9rem;
+      font-family: var(--font-body); outline: none; -webkit-appearance: none;
+    }
+    .intake-form select option { background: #1a1a2e; color: var(--white); }
+    .intake-form select:focus, .intake-form input:focus { border-color: var(--purple); }
+    .intake-form input::placeholder { color: rgba(255,255,255,.4); }
+
+    /* ── PER-HIRE PRICING ── */
+    .per-hire-note {
+      text-align: center; font-size: .85rem; color: var(--text-mid); margin-top: 2rem;
+    }
+    .per-hire-note strong { color: var(--text); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .how-grid, .funnel-grid { grid-template-columns: 1fr; }
@@ -810,7 +885,7 @@
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .features-grid { grid-template-columns: 1fr; }
       .feature-card.accent { grid-column: span 1; }
-      .channels-grid { grid-template-columns: 1fr 1fr; }
+      .roles-grid { grid-template-columns: 1fr 1fr; }
       .results-grid { grid-template-columns: 1fr; }
       .result-card.featured { grid-column: span 1; }
       .pricing-grid { grid-template-columns: 1fr; }
@@ -821,10 +896,10 @@
       .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
     }
     @media (max-width: 480px) {
-      .channels-grid { grid-template-columns: 1fr; }
+      .roles-grid { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; align-items: stretch; }
+      .intake-form { grid-template-columns: 1fr; border-radius: 16px; padding: 1rem; }
       .cta-form { flex-direction: column; border-radius: 16px; padding: 1rem; }
-      .cta-form input { text-align: center; padding: .5rem; }
     }
   </style>
 </head>
@@ -844,14 +919,12 @@
   <a href="#" class="nav-logo">RYCS</a>
   <ul class="nav-links">
     <li><a href="#how">How it works</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#channels">Channels</a></li>
-    <li><a href="#results">Results</a></li>
+    <li><a href="#roles">Roles</a></li>
+    <li><a href="#vs-agency">vs Agency</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-cta">
-    <a href="#" class="btn-ghost">Sign in</a>
-    <a href="#cta" class="btn-primary">Get started free</a>
+    <a href="#cta" class="btn-primary">Order hires →</a>
   </div>
 </nav>
 
@@ -862,18 +935,18 @@
   <div class="hero-content">
     <div class="hero-badge">
       <span></span>
-      Live in 10 minutes · No demo needed
+      Pay per hire · No platform · No lock-in
     </div>
     <h1 class="hero-title">
-      <span class="line"><span class="word">No sales calls.</span></span>
-      <span class="line"><span class="word gradient-word">No onboarding.</span></span>
-      <span class="line"><span class="word">Just hires.</span></span>
+      <span class="line"><span class="word">You need hires.</span></span>
+      <span class="line"><span class="word gradient-word">We deliver them.</span></span>
+      <span class="line"><span class="word">Pay when hired.</span></span>
     </h1>
     <p class="hero-sub">
-      Connect your ATS, set a budget, go live across LinkedIn, Instagram, TikTok and more — in under 10 minutes. RYCS measures every euro through to the hire, not just the click.
+      Tell us what you need. We run the social ads, screen the candidates, and deliver interview-ready people straight into your ATS. No software to learn. No retainer. No hire, no invoice.
     </p>
     <div class="hero-actions">
-      <a href="#cta" class="btn-large primary">Start free — no credit card</a>
+      <a href="#cta" class="btn-large primary">Order your first hires →</a>
       <a href="#how" class="btn-large outline">See how it works ↓</a>
     </div>
   </div>
@@ -886,22 +959,26 @@
 <!-- ═══════════ MARQUEE ═══════════ -->
 <div class="marquee-section">
   <div class="marquee-track" id="marquee">
-    <div class="platform-pill"><span class="platform-icon">💼</span>LinkedIn</div>
-    <div class="platform-pill"><span class="platform-icon">📘</span>Facebook</div>
-    <div class="platform-pill"><span class="platform-icon">📸</span>Instagram</div>
-    <div class="platform-pill"><span class="platform-icon">🎵</span>TikTok</div>
-    <div class="platform-pill"><span class="platform-icon">👻</span>Snapchat</div>
-    <div class="platform-pill"><span class="platform-icon">▶️</span>YouTube</div>
-    <div class="platform-pill"><span class="platform-icon">𝕏</span>X / Twitter</div>
-    <div class="platform-pill"><span class="platform-icon">📌</span>Pinterest</div>
-    <div class="platform-pill"><span class="platform-icon">💼</span>LinkedIn</div>
-    <div class="platform-pill"><span class="platform-icon">📘</span>Facebook</div>
-    <div class="platform-pill"><span class="platform-icon">📸</span>Instagram</div>
-    <div class="platform-pill"><span class="platform-icon">🎵</span>TikTok</div>
-    <div class="platform-pill"><span class="platform-icon">👻</span>Snapchat</div>
-    <div class="platform-pill"><span class="platform-icon">▶️</span>YouTube</div>
-    <div class="platform-pill"><span class="platform-icon">𝕏</span>X / Twitter</div>
-    <div class="platform-pill"><span class="platform-icon">📌</span>Pinterest</div>
+    <div class="platform-pill"><span class="platform-icon">📦</span>Logistics</div>
+    <div class="platform-pill"><span class="platform-icon">🏭</span>Warehouse</div>
+    <div class="platform-pill"><span class="platform-icon">🛒</span>Retail</div>
+    <div class="platform-pill"><span class="platform-icon">🍽️</span>Hospitality</div>
+    <div class="platform-pill"><span class="platform-icon">🎧</span>Customer Service</div>
+    <div class="platform-pill"><span class="platform-icon">📈</span>Sales</div>
+    <div class="platform-pill"><span class="platform-icon">📣</span>Marketing</div>
+    <div class="platform-pill"><span class="platform-icon">💶</span>Finance</div>
+    <div class="platform-pill"><span class="platform-icon">💻</span>Tech</div>
+    <div class="platform-pill"><span class="platform-icon">🏥</span>Care</div>
+    <div class="platform-pill"><span class="platform-icon">🚚</span>Drivers</div>
+    <div class="platform-pill"><span class="platform-icon">⚙️</span>Operations</div>
+    <div class="platform-pill"><span class="platform-icon">📦</span>Logistics</div>
+    <div class="platform-pill"><span class="platform-icon">🏭</span>Warehouse</div>
+    <div class="platform-pill"><span class="platform-icon">🛒</span>Retail</div>
+    <div class="platform-pill"><span class="platform-icon">🍽️</span>Hospitality</div>
+    <div class="platform-pill"><span class="platform-icon">🎧</span>Customer Service</div>
+    <div class="platform-pill"><span class="platform-icon">📈</span>Sales</div>
+    <div class="platform-pill"><span class="platform-icon">💻</span>Tech</div>
+    <div class="platform-pill"><span class="platform-icon">🚚</span>Drivers</div>
   </div>
 </div>
 
@@ -910,20 +987,20 @@
   <div class="container">
     <div class="stats-grid">
       <div class="stat-cell reveal">
-        <div class="stat-number" data-count="2400">0</div>
-        <div class="stat-label">Companies advertising<br/>with RYCS</div>
+        <div class="stat-number" data-count="12400" data-suffix="+">0</div>
+        <div class="stat-label">Hires delivered<br/>by RYCS</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.1s">
-        <div class="stat-number" data-count="58" data-suffix="%">0%</div>
-        <div class="stat-label">Average reduction<br/>in cost-per-hire</div>
+        <div class="stat-number" data-count="387" data-suffix="">0</div>
+        <div class="stat-label">Average cost<br/>per hire (€)</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.2s">
-        <div class="stat-number" data-count="3.1" data-suffix="x">0x</div>
-        <div class="stat-label">More hires per euro<br/>vs job boards alone</div>
+        <div class="stat-number" data-count="11" data-suffix=" days">0</div>
+        <div class="stat-label">Average time<br/>to first interview</div>
       </div>
       <div class="stat-cell reveal" style="transition-delay:.3s">
-        <div class="stat-number" data-count="12" data-suffix="M+">0</div>
-        <div class="stat-label">Candidates reached<br/>every month</div>
+        <div class="stat-number" data-count="4500" data-suffix="">0</div>
+        <div class="stat-label">Avg agency fee (€)<br/>we replace</div>
       </div>
     </div>
   </div>
@@ -936,22 +1013,22 @@
       <div class="nodemo-cell reveal">
         <div class="nodemo-icon">🚫</div>
         <div>
-          <div class="nodemo-title"><span class="nodemo-strike">Book a demo</span><br/><span class="nodemo-good">Sign up. Go live.</span></div>
-          <div class="nodemo-desc">No sales call, no 45-minute discovery, no "we'll send you a quote." Pricing is on the site. First campaign in 10 minutes.</div>
+          <div class="nodemo-title"><span class="nodemo-strike">Platform to learn</span><br/><span class="nodemo-good">Tell us what you need.</span></div>
+          <div class="nodemo-desc">No dashboards to configure, no ad accounts to connect. You fill in a brief — role, location, volume — and we handle everything.</div>
         </div>
       </div>
       <div class="nodemo-cell reveal" style="transition-delay:.07s">
         <div class="nodemo-icon">🚫</div>
         <div>
-          <div class="nodemo-title"><span class="nodemo-strike">Dedicated CSM</span><br/><span class="nodemo-good">The product does it.</span></div>
-          <div class="nodemo-desc">Funnel leaks, budget reallocation, creative refresh — RYCS detects and fixes automatically. Your team stays focused on interviewing.</div>
+          <div class="nodemo-title"><span class="nodemo-strike">Setup &amp; onboarding</span><br/><span class="nodemo-good">Live within 24 hours.</span></div>
+          <div class="nodemo-desc">We launch your campaigns the same day. Candidates start appearing in your ATS within the first 48 hours — no training, no waiting.</div>
         </div>
       </div>
       <div class="nodemo-cell reveal" style="transition-delay:.14s">
         <div class="nodemo-icon">🚫</div>
         <div>
-          <div class="nodemo-title"><span class="nodemo-strike">Lock-in contracts</span><br/><span class="nodemo-good">Cancel any time.</span></div>
-          <div class="nodemo-desc">Monthly billing, no implementation fee, no minimum term. We stay because the hires keep coming — not because a contract says so.</div>
+          <div class="nodemo-title"><span class="nodemo-strike">Pay regardless</span><br/><span class="nodemo-good">Only pay per hire.</span></div>
+          <div class="nodemo-desc">Zero subscription. Zero retainer. You pay a fixed fee per hire delivered — nothing if we don't fill the role. No hire, no invoice.</div>
         </div>
       </div>
     </div>
@@ -964,42 +1041,35 @@
     <div class="how-grid">
       <div>
         <span class="section-tag reveal">How it works</span>
-        <h2 class="section-title reveal">From job opening<br/>to social ad in minutes</h2>
-        <p class="section-sub reveal">No agency, no guesswork. RYCS reads your ATS, crafts the creatives, and launches campaigns across every channel — then optimises them automatically.</p>
+        <h2 class="section-title reveal">Three steps.<br/>Interview-ready candidates.</h2>
+        <p class="section-sub reveal">We handle everything between "we need someone" and "they're in your calendar." You just interview and decide.</p>
 
         <ul class="steps-list" style="margin-top:2.5rem">
           <li class="step-item reveal">
             <div class="step-num">01</div>
             <div>
-              <div class="step-title">Connect your ATS or job feed</div>
-              <div class="step-desc">Works with Workday, Greenhouse, Lever, Bullhorn, SmartRecruiters and 60+ others via native integrations or XML feed.</div>
+              <div class="step-title">Tell us what you need</div>
+              <div class="step-desc">Fill in a 2-minute brief: role type, city, volume, and start date. That's it. No integration setup, no ad account, no platform to learn.</div>
             </div>
           </li>
           <li class="step-item reveal" style="transition-delay:.08s">
             <div class="step-num">02</div>
             <div>
-              <div class="step-title">AI builds your ad creatives</div>
-              <div class="step-desc">Our engine generates scroll-stopping copy and visuals, tailored for each platform's format and audience behaviour.</div>
+              <div class="step-title">We run everything</div>
+              <div class="step-desc">Our team launches targeted social campaigns across LinkedIn, Instagram, TikTok and Facebook. AI creates the ads, screens the applicants, and filters out unqualified leads — all without you lifting a finger.</div>
             </div>
           </li>
           <li class="step-item reveal" style="transition-delay:.16s">
             <div class="step-num">03</div>
             <div>
-              <div class="step-title">Launch across all channels</div>
-              <div class="step-desc">One click distributes your ads to LinkedIn, Facebook, Instagram, TikTok and more — with budgets allocated by predicted ROI.</div>
-            </div>
-          </li>
-          <li class="step-item reveal" style="transition-delay:.24s">
-            <div class="step-num">04</div>
-            <div>
-              <div class="step-title">Optimise and close the role</div>
-              <div class="step-desc">Real-time analytics track every candidate from impression to signed contract — cost-per-hire, funnel drop-off, and automated budget shifts to top performers.</div>
+              <div class="step-title">Hires land in your ATS</div>
+              <div class="step-desc">Interview-ready candidates sync directly into your ATS or inbox. You review, you choose, you hire. We invoice only for the hires that happen.</div>
             </div>
           </li>
         </ul>
       </div>
 
-      <!-- Mock Dashboard -->
+      <!-- Mock Order Card -->
       <div class="how-visual reveal" style="transition-delay:.2s">
         <div class="how-visual-inner">
           <div class="mock-topbar">
@@ -1008,51 +1078,40 @@
               <div class="mock-dot"></div>
               <div class="mock-dot"></div>
             </div>
-            <div class="mock-title-bar">RYCS Dashboard · Q2 2025</div>
+            <div class="mock-title-bar">RYCS · Active Order · DHL Rotterdam</div>
           </div>
 
           <div class="mock-card">
-            <div class="mock-card-label">Applications this week</div>
-            <div class="mock-card-val up">↑ 1,284</div>
+            <div class="mock-card-label">Role ordered</div>
+            <div class="mock-card-val" style="font-size:1rem">Warehouse Operative · Rotterdam</div>
           </div>
 
           <div class="mock-card">
-            <div class="mock-card-label">Cost per hire</div>
-            <div class="mock-card-val" style="color:var(--cyan)">€ 387</div>
+            <div class="mock-card-label">Candidates delivered this week</div>
+            <div class="mock-card-val up">↑ 18 interview-ready</div>
           </div>
 
           <div class="mock-card">
-            <div class="mock-card-label">Channel breakdown</div>
+            <div class="mock-card-label">Delivery progress</div>
             <div class="mock-bar-row">
               <div class="mock-bar-item">
-                <span class="mock-bar-label">LinkedIn</span>
-                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:78%;background:#0A66C2"></div></div>
+                <span class="mock-bar-label">Hires ordered</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:100%;background:var(--purple)"></div></div>
               </div>
               <div class="mock-bar-item">
-                <span class="mock-bar-label">Instagram</span>
-                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:62%;background:#E4405F"></div></div>
+                <span class="mock-bar-label">Screened &amp; qualified</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:72%;background:var(--cyan)"></div></div>
               </div>
               <div class="mock-bar-item">
-                <span class="mock-bar-label">TikTok</span>
-                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:51%;background:#69C9D0"></div></div>
-              </div>
-              <div class="mock-bar-item">
-                <span class="mock-bar-label">Facebook</span>
-                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:44%;background:#1877F2"></div></div>
+                <span class="mock-bar-label">Hired</span>
+                <div class="mock-bar-bg"><div class="mock-bar-fill" style="width:40%;background:var(--green)"></div></div>
               </div>
             </div>
           </div>
 
           <div class="mock-card">
-            <div class="mock-card-label">Active channels</div>
-            <div class="mock-channels">
-              <span class="mock-ch li">LinkedIn</span>
-              <span class="mock-ch fb">Facebook</span>
-              <span class="mock-ch ig">Instagram</span>
-              <span class="mock-ch tt">TikTok</span>
-              <span class="mock-ch sc">Snapchat</span>
-              <span class="mock-ch yt">YouTube</span>
-            </div>
+            <div class="mock-card-label">Cost so far</div>
+            <div class="mock-card-val" style="color:var(--green)">€ 1,548 · 4 hires</div>
           </div>
         </div>
       </div>
@@ -1060,201 +1119,143 @@
   </div>
 </section>
 
-<!-- ═══════════ HIRE FUNNEL ═══════════ -->
-<section id="funnel" class="section-pad">
-  <div class="container">
-    <div class="funnel-grid">
-      <div>
-        <span class="section-tag reveal" style="color:var(--green)">Measured to the hire</span>
-        <h2 class="section-title reveal">You're judged on hires.<br/>So that's what we measure.</h2>
-        <p class="section-sub reveal">Most ad platforms stop counting at the click. RYCS syncs with your ATS and tracks every candidate from first impression to signed contract — so you see exactly what a hire costs, and exactly where your funnel leaks.</p>
-
-        <ul class="funnel-points">
-          <li class="reveal">
-            <div class="funnel-point-icon">🎯</div>
-            <div>
-              <div class="funnel-point-title">Cost-per-hire, not cost-per-click</div>
-              <div class="funnel-point-desc">Budgets optimise toward the channels and creatives that produce hires — verified against your ATS, not platform-reported clicks.</div>
-            </div>
-          </li>
-          <li class="reveal" style="transition-delay:.08s">
-            <div class="funnel-point-icon">🔍</div>
-            <div>
-              <div class="funnel-point-title">See where candidates drop off</div>
-              <div class="funnel-point-desc">Slow follow-up? Broken application form? RYCS flags exactly where qualified candidates leak out of your process — before they cost you the hire.</div>
-            </div>
-          </li>
-          <li class="reveal" style="transition-delay:.16s">
-            <div class="funnel-point-icon">🤝</div>
-            <div>
-              <div class="funnel-point-title">Aligned incentives, optional per-hire pricing</div>
-              <div class="funnel-point-desc">On Growth and Enterprise plans you can switch to hybrid per-hire pricing. We only win when you hire — the way it should be.</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <div class="funnel-visual reveal" style="transition-delay:.15s">
-        <div class="funnel-stage">
-          <div>
-            <div class="funnel-stage-label">Reached</div>
-            <div class="funnel-stage-sub">Impressions across all channels</div>
-          </div>
-          <div class="funnel-stage-num">412K</div>
-        </div>
-        <div class="funnel-stage">
-          <div>
-            <div class="funnel-stage-label">Engaged</div>
-            <div class="funnel-stage-sub">Clicked through to your vacancy</div>
-          </div>
-          <div class="funnel-stage-num">18.4K</div>
-        </div>
-        <div class="funnel-stage">
-          <div>
-            <div class="funnel-stage-label">Applied</div>
-            <div class="funnel-stage-sub">Completed applications</div>
-          </div>
-          <div class="funnel-stage-num">1,284</div>
-        </div>
-        <div class="funnel-stage">
-          <div>
-            <div class="funnel-stage-label">Interviewed</div>
-            <div class="funnel-stage-sub">Synced from your ATS</div>
-          </div>
-          <div class="funnel-stage-num">96</div>
-        </div>
-        <div class="funnel-stage">
-          <div>
-            <div class="funnel-stage-label">Hired</div>
-            <div class="funnel-stage-sub">€387 per hire this quarter</div>
-          </div>
-          <div class="funnel-stage-num">23</div>
-        </div>
-        <div class="funnel-alert">
-          <strong>⚠ Funnel leak detected:</strong> 38% of qualified applicants received no response within 5 days. Estimated 9 hires lost. <u>Enable auto-nudge →</u>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ FEATURES ═══════════ -->
-<section id="features" class="section-pad">
+<!-- ═══════════ ROLES ═══════════ -->
+<section id="roles" class="section-pad" style="background:var(--bg-alt)">
   <div class="container">
     <div class="features-header">
       <div>
-        <span class="section-tag reveal">Platform</span>
-        <h2 class="section-title reveal">Everything you need<br/>to dominate social recruiting</h2>
+        <span class="section-tag reveal">Role types</span>
+        <h2 class="section-title reveal">We deliver across<br/>every volume role</h2>
       </div>
-      <p class="section-sub reveal">Purpose-built for talent acquisition teams — not repurposed ecommerce ad tools.</p>
+      <p class="section-sub reveal">From single replacements to 200-person ramp-ups — same fixed price per hire, no matter the volume.</p>
     </div>
 
-    <div class="features-grid">
-      <div class="feature-card accent reveal" id="fc1">
-        <div class="feature-icon">🤖</div>
-        <div class="feature-name">AI Creative Studio</div>
-        <div class="feature-desc">Generate on-brand, platform-native ad creatives for every job in seconds. Images, copy, and CTAs crafted by a model trained on 50M+ job ads.</div>
-        <span class="feature-tag ai">AI-Powered</span>
+    <div class="roles-grid">
+      <div class="role-card reveal">
+        <div class="role-emoji">📦</div>
+        <div class="role-name">Logistics &amp; Warehouse</div>
+        <div class="role-meta">Avg delivery: 8 days · 3,200+ hired</div>
+        <div class="role-price">from €299 / hire</div>
       </div>
-      <div class="feature-card reveal" id="fc2" style="transition-delay:.05s">
-        <div class="feature-icon">📊</div>
-        <div class="feature-name">Unified Analytics</div>
-        <div class="feature-desc">See every impression, click, and application in one dashboard — across all channels, all campaigns.</div>
+      <div class="role-card reveal" style="transition-delay:.05s">
+        <div class="role-emoji">🛒</div>
+        <div class="role-name">Retail &amp; Hospitality</div>
+        <div class="role-meta">Avg delivery: 9 days · 2,800+ hired</div>
+        <div class="role-price">from €299 / hire</div>
       </div>
-      <div class="feature-card reveal" id="fc3" style="transition-delay:.1s">
-        <div class="feature-icon">🎯</div>
-        <div class="feature-name">Smart Targeting</div>
-        <div class="feature-desc">Lookalike audiences built from your best hires. Reach passive candidates with laser precision.</div>
-        <span class="feature-tag new">New</span>
+      <div class="role-card reveal" style="transition-delay:.1s">
+        <div class="role-emoji">🎧</div>
+        <div class="role-name">Customer Service</div>
+        <div class="role-meta">Avg delivery: 10 days · 1,900+ hired</div>
+        <div class="role-price">from €299 / hire</div>
       </div>
-      <div class="feature-card reveal" id="fc4" style="transition-delay:.15s">
-        <div class="feature-icon">⚡</div>
-        <div class="feature-name">ATS Sync</div>
-        <div class="feature-desc">Bi-directional sync with 60+ ATS platforms. Jobs go live instantly, roles that fill pause automatically.</div>
+      <div class="role-card reveal" style="transition-delay:.15s">
+        <div class="role-emoji">📈</div>
+        <div class="role-name">Sales &amp; Marketing</div>
+        <div class="role-meta">Avg delivery: 12 days · 1,100+ hired</div>
+        <div class="role-price">from €449 / hire</div>
       </div>
-      <div class="feature-card reveal" id="fc5" style="transition-delay:.2s">
-        <div class="feature-icon">💰</div>
-        <div class="feature-name">Budget Optimiser</div>
-        <div class="feature-desc">AI reallocates spend in real-time to channels and creative variants delivering the lowest cost-per-hire — not just clicks.</div>
-        <span class="feature-tag ai">AI-Powered</span>
+      <div class="role-card reveal" style="transition-delay:.2s">
+        <div class="role-emoji">💻</div>
+        <div class="role-name">Tech &amp; Digital</div>
+        <div class="role-meta">Avg delivery: 14 days · 680+ hired</div>
+        <div class="role-price">from €649 / hire</div>
       </div>
-      <div class="feature-card reveal" id="fc6" style="transition-delay:.25s">
-        <div class="feature-icon">🔁</div>
-        <div class="feature-name">Retargeting Engine</div>
-        <div class="feature-desc">Re-engage candidates who clicked but didn't apply with personalised follow-up ad sequences.</div>
-        <span class="feature-tag new">New</span>
-      </div>
-      <div class="feature-card reveal" id="fc7" style="transition-delay:.3s">
-        <div class="feature-icon">🌍</div>
-        <div class="feature-name">Multi-language</div>
-        <div class="feature-desc">Auto-translate and adapt your ads for local markets. 28 languages, 60+ countries supported out of the box.</div>
-      </div>
-      <div class="feature-card reveal" id="fc8" style="transition-delay:.35s">
-        <div class="feature-icon">🏢</div>
-        <div class="feature-name">Employer Branding</div>
-        <div class="feature-desc">Brand templates, tone-of-voice controls, and approval workflows so every ad looks and feels on-brand.</div>
-      </div>
-      <div class="feature-card reveal" id="fc9" style="transition-delay:.4s">
-        <div class="feature-icon">📱</div>
-        <div class="feature-name">Mobile-first Creatives</div>
-        <div class="feature-desc">Every ad is built for thumb-stopping on mobile — Stories, Reels, TikToks and in-feed formats natively.</div>
+      <div class="role-card reveal" style="transition-delay:.25s">
+        <div class="role-emoji">🚚</div>
+        <div class="role-name">Drivers &amp; Operations</div>
+        <div class="role-meta">Avg delivery: 11 days · 1,400+ hired</div>
+        <div class="role-price">from €299 / hire</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ SOCIAL CHANNELS ═══════════ -->
-<section id="channels" class="section-pad">
+<!-- ═══════════ VS AGENCY ═══════════ -->
+<section id="vs-agency" class="section-pad">
   <div class="container">
-    <div class="channels-header">
-      <span class="section-tag reveal">Channels</span>
-      <h2 class="section-title reveal">Reach talent where<br/>they actually scroll</h2>
-      <p class="section-sub reveal" style="margin-top:.75rem">One platform. Every channel. Zero complexity.</p>
+    <div style="text-align:center;margin-bottom:1rem">
+      <span class="section-tag reveal">RYCS vs Agency</span>
+      <h2 class="section-title reveal">Same outcome.<br/>A fraction of the cost.</h2>
+      <p class="section-sub reveal" style="max-width:560px;margin:.75rem auto 0">Agencies charge 15–25% of first-year salary. We charge a flat fee per hire — and you only pay when it works.</p>
     </div>
 
-    <div class="channels-grid">
-      <div class="channel-card ch-li reveal">
-        <span class="channel-logo">💼</span>
-        <div class="channel-name">LinkedIn</div>
-        <div class="channel-stat">950M professionals</div>
-        <div class="channel-desc">Reach active and passive job seekers with precision targeting by job title, industry, company size, and skills.</div>
-        <div class="channel-glow"></div>
-      </div>
-      <div class="channel-card ch-fb reveal" style="transition-delay:.07s">
-        <span class="channel-logo">📘</span>
-        <div class="channel-name">Facebook</div>
-        <div class="channel-stat">3B monthly users</div>
-        <div class="channel-desc">Mass-market reach with deep demographic targeting. Perfect for volume hiring and local roles.</div>
-        <div class="channel-glow"></div>
-      </div>
-      <div class="channel-card ch-ig reveal" style="transition-delay:.14s">
-        <span class="channel-logo">📸</span>
-        <div class="channel-name">Instagram</div>
-        <div class="channel-stat">2B active users</div>
-        <div class="channel-desc">Showcase your employer brand visually. Reels and Stories drive high engagement from younger talent pools.</div>
-        <div class="channel-glow"></div>
-      </div>
-      <div class="channel-card ch-tt reveal" style="transition-delay:.21s">
-        <span class="channel-logo">🎵</span>
-        <div class="channel-name">TikTok</div>
-        <div class="channel-stat">1.5B users, Gen Z dominant</div>
-        <div class="channel-desc">Short-form video ads that feel native, not corporate. The highest-growth channel for Gen Z recruitment.</div>
-        <div class="channel-glow"></div>
-      </div>
-      <div class="channel-card ch-sc reveal" style="transition-delay:.28s">
-        <span class="channel-logo">👻</span>
-        <div class="channel-name">Snapchat</div>
-        <div class="channel-stat">800M users</div>
-        <div class="channel-desc">Snap Ads and Story ads reach 18–34 year olds with immersive, full-screen creative experiences.</div>
-        <div class="channel-glow"></div>
-      </div>
-      <div class="channel-card ch-x reveal" style="transition-delay:.35s">
-        <span class="channel-logo">𝕏</span>
-        <div class="channel-name">X / Twitter</div>
-        <div class="channel-stat">600M monthly users</div>
-        <div class="channel-desc">Reach tech and finance professionals in real-time. Strong for niche roles and thought-leadership audiences.</div>
-        <div class="channel-glow"></div>
-      </div>
+    <div class="vs-table-wrap reveal">
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th style="width:30%">Feature</th>
+            <th>Large Agency</th>
+            <th>Boutique Headhunter</th>
+            <th class="rycs-col">RYCS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Cost per hire</td>
+            <td>€3,500–€8,000</td>
+            <td>€5,000–€15,000</td>
+            <td class="rycs-col"><span class="tick-y">€299–€649</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Time to first candidate</td>
+            <td>1–3 weeks</td>
+            <td>2–4 weeks</td>
+            <td class="rycs-col"><span class="tick-y">24–48 hours</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Reach passive candidates</td>
+            <td><span class="tick-mid">Limited</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Social-first</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Pay only if hired</td>
+            <td><span class="tick-n">✗ Retainer</span></td>
+            <td><span class="tick-n">✗ Retainer</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Always</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Volume scaling</td>
+            <td><span class="tick-mid">Slow</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Same-day</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Contract required</td>
+            <td><span class="tick-n">✗ 3–6 months</span></td>
+            <td><span class="tick-n">✗ Per-search</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ None</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Transparent pricing</td>
+            <td><span class="tick-n">✗</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ Fixed on site</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">SMB accessible</td>
+            <td><span class="tick-n">✗</span></td>
+            <td><span class="tick-n">✗</span></td>
+            <td class="rycs-col"><span class="tick-y">✓ From 1 hire</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GUARANTEE ═══════════ -->
+<section id="guarantee">
+  <div class="container">
+    <div class="guarantee-badge reveal">Our promise</div>
+    <h2 class="guarantee-title reveal">No hire.<br/><span class="glow">No invoice.</span></h2>
+    <p class="guarantee-sub reveal">We put skin in the game. If we don't deliver an interview-ready candidate that you hire, you pay nothing. Zero risk, zero retainer.</p>
+    <div class="guarantee-pills reveal">
+      <div class="g-pill">✓ Fixed price per hire</div>
+      <div class="g-pill">✓ No platform subscription</div>
+      <div class="g-pill">✓ Cancel after any order</div>
+      <div class="g-pill">✓ ATS delivery included</div>
     </div>
   </div>
 </section>
@@ -1263,31 +1264,15 @@
 <section id="testimonials" class="section-pad">
   <div class="container">
     <div class="testimonials-header">
-      <span class="section-tag reveal">Loved by teams</span>
-      <h2 class="section-title reveal">The people behind<br/>the results</h2>
+      <span class="section-tag reveal">What clients say</span>
+      <h2 class="section-title reveal">Real orders.<br/>Real hires delivered.</h2>
     </div>
   </div>
   <div class="testimonials-track-wrap">
     <div class="testimonials-track" id="testi-track">
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"RYCS cut our time-to-hire by 40%. We went from posting jobs on job boards to running full social campaigns in the same 10 minutes."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">SV</div>
-          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of TA · Coolblue</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"The AI-generated creatives are genuinely better than what our agency was producing. And they publish in minutes, not weeks."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">MK</div>
-          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">Recruiting Manager · REWE Group</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"We hired 200 warehouse operatives in 3 weeks using RYCS. Cost-per-apply was €3.80. No other tool comes close."</div>
+        <div class="testi-quote">"We ordered 40 warehouse operators in Rotterdam. RYCS delivered 43 hires in 3 weeks at €312 each. Our agency was quoting €4,800 per person. The math is insane."</div>
         <div class="testi-author">
           <div class="testi-avatar">JD</div>
           <div><div class="testi-name">Julie Desmet</div><div class="testi-role">Talent Ops Lead · DHL</div></div>
@@ -1295,48 +1280,48 @@
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"Finally a recruitment marketing tool that actually understands social. The TikTok integration alone filled three hard-to-hire roles last quarter."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">TP</div>
-          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Senior Recruiter · Deloitte</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"We replaced three separate tools with RYCS. Our team is smaller, our results are better, and we have actual data to show the board."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">AH</div>
-          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">VP People · N26</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"The lookalike audiences feature is magic. We fed RYCS our top performers and it found us 4x more similar people at half the CPL."</div>
-        <div class="testi-author">
-          <div class="testi-avatar">RN</div>
-          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Recruitment Marketing · Randstad</div></div>
-        </div>
-      </div>
-      <!-- Duplicate for infinite loop -->
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"RYCS cut our time-to-hire by 40%. We went from posting jobs on job boards to running full social campaigns in the same 10 minutes."</div>
+        <div class="testi-quote">"We needed 12 customer service reps across 3 cities. I submitted the brief on Monday. By Thursday we had 28 qualified candidates in our ATS. We hired 14."</div>
         <div class="testi-author">
           <div class="testi-avatar">SV</div>
-          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of TA · Coolblue</div></div>
+          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of People · Coolblue</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"The AI-generated creatives are genuinely better than what our agency was producing. And they publish in minutes, not weeks."</div>
+        <div class="testi-quote">"Our previous agency took 6 weeks per hire and charged 18% salary. RYCS filled the same profile in 11 days at a flat €449. We've switched everything over."</div>
         <div class="testi-author">
           <div class="testi-avatar">MK</div>
-          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">Recruiting Manager · REWE Group</div></div>
+          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">HR Director · REWE Group</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"We hired 200 warehouse operatives in 3 weeks using RYCS. Cost-per-apply was €3.80. No other tool comes close."</div>
+        <div class="testi-quote">"I was sceptical — no demo, no sales call, flat fee. Then 18 candidates showed up in my inbox 48 hours after submitting the brief. I'm a believer now."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">TP</div>
+          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Hiring Manager · Deloitte</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We scaled from 10 to 80 drivers across the Netherlands in one quarter. RYCS just kept delivering. No capacity issues, no renegotiation — we just ordered more."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">AH</div>
+          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">COO · Flink</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our recruitment agency relationships were expensive and slow. RYCS replaces them entirely for volume roles — and we only pay when someone actually starts."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">RN</div>
+          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Head of HR · Randstad NL</div></div>
+        </div>
+      </div>
+      <!-- Duplicates for infinite loop -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We ordered 40 warehouse operators in Rotterdam. RYCS delivered 43 hires in 3 weeks at €312 each. Our agency was quoting €4,800 per person. The math is insane."</div>
         <div class="testi-author">
           <div class="testi-avatar">JD</div>
           <div><div class="testi-name">Julie Desmet</div><div class="testi-role">Talent Ops Lead · DHL</div></div>
@@ -1344,71 +1329,42 @@
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"Finally a recruitment marketing tool that actually understands social. The TikTok integration alone filled three hard-to-hire roles last quarter."</div>
+        <div class="testi-quote">"We needed 12 customer service reps across 3 cities. I submitted the brief on Monday. By Thursday we had 28 qualified candidates in our ATS. We hired 14."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">SV</div>
+          <div><div class="testi-name">Sara Van den Berg</div><div class="testi-role">Head of People · Coolblue</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Our previous agency took 6 weeks per hire and charged 18% salary. RYCS filled the same profile in 11 days at a flat €449. We've switched everything over."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Marco Kessler</div><div class="testi-role">HR Director · REWE Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"I was sceptical — no demo, no sales call, flat fee. Then 18 candidates showed up in my inbox 48 hours after submitting the brief. I'm a believer now."</div>
         <div class="testi-author">
           <div class="testi-avatar">TP</div>
-          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Senior Recruiter · Deloitte</div></div>
+          <div><div class="testi-name">Thomas Peeters</div><div class="testi-role">Hiring Manager · Deloitte</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"We replaced three separate tools with RYCS. Our team is smaller, our results are better, and we have actual data to show the board."</div>
+        <div class="testi-quote">"We scaled from 10 to 80 drivers across the Netherlands in one quarter. RYCS just kept delivering. No capacity issues, no renegotiation — we just ordered more."</div>
         <div class="testi-author">
           <div class="testi-avatar">AH</div>
-          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">VP People · N26</div></div>
+          <div><div class="testi-name">Anna Hofer</div><div class="testi-role">COO · Flink</div></div>
         </div>
       </div>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"The lookalike audiences feature is magic. We fed RYCS our top performers and it found us 4x more similar people at half the CPL."</div>
+        <div class="testi-quote">"Our recruitment agency relationships were expensive and slow. RYCS replaces them entirely for volume roles — and we only pay when someone actually starts."</div>
         <div class="testi-author">
           <div class="testi-avatar">RN</div>
-          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Recruitment Marketing · Randstad</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ RESULTS ═══════════ -->
-<section id="results" class="section-pad">
-  <div class="container">
-    <div style="margin-bottom:4rem">
-      <span class="section-tag reveal">Case studies</span>
-      <h2 class="section-title reveal">Real companies.<br/>Real numbers.</h2>
-    </div>
-    <div class="results-grid">
-      <div class="result-card featured reveal">
-        <div>
-          <div class="result-company">Coolblue · E-commerce</div>
-          <div class="result-title">600 warehouse staff hired across 3 countries in one quarter</div>
-          <div class="result-desc">Coolblue used RYCS to run hyper-local Facebook and Instagram campaigns in NL, BE and DE simultaneously — with creative tailored per city and role. Automated budget reallocation cut their CPL by 61% vs. their previous agency-managed campaigns.</div>
-        </div>
-        <div class="result-metric">
-          <div class="result-metric-num">−61%</div>
-          <div class="result-metric-label">Cost per apply</div>
-        </div>
-      </div>
-      <div class="result-card reveal" style="transition-delay:.1s">
-        <div>
-          <div class="result-company">N26 · Fintech</div>
-          <div class="result-title">Doubled engineer applicant quality via TikTok</div>
-          <div class="result-desc">RYCS AI creatives + lookalike targeting from existing top engineers drove a 2x increase in senior dev applicants from TikTok and YouTube.</div>
-        </div>
-        <div class="result-metric">
-          <div class="result-metric-num">2×</div>
-          <div class="result-metric-label">Applicant quality</div>
-        </div>
-      </div>
-      <div class="result-card reveal" style="transition-delay:.2s">
-        <div>
-          <div class="result-company">Randstad · Staffing</div>
-          <div class="result-title">Scaled to 12,000 active ads with zero extra headcount</div>
-          <div class="result-desc">Randstad's team of 4 manages full social ad campaigns for all of their enterprise clients using RYCS — without an in-house creative team.</div>
-        </div>
-        <div class="result-metric">
-          <div class="result-metric-num">12K</div>
-          <div class="result-metric-label">Active campaigns</div>
+          <div><div class="testi-name">Roos Nanninga</div><div class="testi-role">Head of HR · Randstad NL</div></div>
         </div>
       </div>
     </div>
@@ -1416,74 +1372,72 @@
 </section>
 
 <!-- ═══════════ PRICING ═══════════ -->
-<section id="pricing" class="section-pad">
+<section id="pricing" class="section-pad" style="background:var(--bg-alt)">
   <div class="container">
     <div class="pricing-header">
       <span class="section-tag reveal">Pricing</span>
-      <h2 class="section-title reveal">Simple, transparent pricing</h2>
-      <p class="section-sub reveal">No setup fees. No long contracts. Cancel anytime.</p>
-      <div class="pricing-toggle reveal">
-        <span>Monthly</span>
-        <button class="toggle-btn">Save 20% yearly</button>
-      </div>
+      <h2 class="section-title reveal">One price.<br/>Per hire delivered.</h2>
+      <p class="section-sub reveal">No subscription. No setup fee. You pay only when a hire happens.</p>
     </div>
 
     <div class="pricing-grid">
       <div class="pricing-card reveal">
-        <div class="pricing-plan">Starter</div>
+        <div class="pricing-plan">Volume</div>
         <div class="pricing-price"><sup>€</sup>299</div>
-        <div class="pricing-period">per month · up to 20 active jobs</div>
+        <div class="pricing-period">per hire delivered</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="check">✓</span> 3 social channels</li>
-          <li><span class="check">✓</span> AI creative generation</li>
-          <li><span class="check">✓</span> ATS integration (1)</li>
-          <li><span class="check">✓</span> Unified analytics</li>
-          <li><span class="check">✓</span> Email support</li>
-          <li><span class="x">✗</span> Lookalike audiences</li>
-          <li><span class="x">✗</span> Multi-language</li>
-          <li><span class="x">✗</span> Employer branding kit</li>
+          <li><span class="check">✓</span> Logistics, Warehouse, Retail</li>
+          <li><span class="check">✓</span> Hospitality, Customer Service</li>
+          <li><span class="check">✓</span> Drivers &amp; Operations</li>
+          <li><span class="check">✓</span> Delivered within 8–11 days</li>
+          <li><span class="check">✓</span> ATS sync included</li>
+          <li><span class="check">✓</span> Volume orders (10+) priority</li>
+          <li><span class="x">✗</span> Senior / specialist profiles</li>
         </ul>
-        <button class="btn-plan outline">Start free trial</button>
+        <a href="#cta" class="btn-plan outline">Order now</a>
       </div>
 
       <div class="pricing-card popular reveal" style="transition-delay:.1s">
-        <div class="popular-badge">Most popular</div>
-        <div class="pricing-plan">Growth</div>
-        <div class="pricing-price"><sup>€</sup>799</div>
-        <div class="pricing-period">per month · unlimited active jobs</div>
+        <div class="popular-badge">Most ordered</div>
+        <div class="pricing-plan">Professional</div>
+        <div class="pricing-price"><sup>€</sup>449</div>
+        <div class="pricing-period">per hire delivered</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="check">✓</span> All 7 social channels</li>
-          <li><span class="check">✓</span> AI creative generation</li>
-          <li><span class="check">✓</span> ATS integration (5)</li>
-          <li><span class="check">✓</span> Unified analytics + exports</li>
-          <li><span class="check">✓</span> Lookalike audiences</li>
-          <li><span class="check">✓</span> Multi-language (28 langs)</li>
-          <li><span class="check">✓</span> Employer branding kit</li>
-          <li><span class="check">✓</span> Priority support + CSM</li>
+          <li><span class="check">✓</span> Sales, Marketing, Finance</li>
+          <li><span class="check">✓</span> Team leads &amp; supervisors</li>
+          <li><span class="check">✓</span> Mid-level management</li>
+          <li><span class="check">✓</span> Delivered within 10–14 days</li>
+          <li><span class="check">✓</span> ATS sync + pre-screen notes</li>
+          <li><span class="check">✓</span> Replacement guarantee (30d)</li>
+          <li><span class="check">✓</span> Dedicated account manager</li>
         </ul>
-        <button class="btn-plan solid">Start free trial</button>
+        <a href="#cta" class="btn-plan solid">Order now</a>
       </div>
 
       <div class="pricing-card reveal" style="transition-delay:.2s">
-        <div class="pricing-plan">Enterprise</div>
-        <div class="pricing-price" style="font-size:2rem;margin-top:.4rem">Custom</div>
-        <div class="pricing-period">tailored to your hiring volume</div>
+        <div class="pricing-plan">Specialist</div>
+        <div class="pricing-price"><sup>€</sup>649</div>
+        <div class="pricing-period">per hire delivered</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li><span class="check">✓</span> Everything in Growth</li>
-          <li><span class="check">✓</span> Unlimited ATS integrations</li>
-          <li><span class="check">✓</span> Dedicated CSM + SLA</li>
-          <li><span class="check">✓</span> Custom reporting</li>
-          <li><span class="check">✓</span> SSO / SAML</li>
-          <li><span class="check">✓</span> White-label option</li>
-          <li><span class="check">✓</span> API access</li>
-          <li><span class="check">✓</span> On-premise deployment</li>
+          <li><span class="check">✓</span> Tech, Engineering, Data</li>
+          <li><span class="check">✓</span> Senior professionals</li>
+          <li><span class="check">✓</span> Hard-to-fill profiles</li>
+          <li><span class="check">✓</span> Delivered within 14–21 days</li>
+          <li><span class="check">✓</span> Deep pre-screen + portfolio</li>
+          <li><span class="check">✓</span> Replacement guarantee (60d)</li>
+          <li><span class="check">✓</span> Priority delivery SLA</li>
         </ul>
-        <button class="btn-plan outline">Talk to sales</button>
+        <a href="#cta" class="btn-plan outline">Order now</a>
       </div>
     </div>
+
+    <p class="per-hire-note reveal">
+      <strong>All plans:</strong> No subscription · No setup fee · No minimum order · Cancel after any hire ·
+      <strong>vs agency average: €4,500+</strong>
+    </p>
   </div>
 </section>
 
@@ -1491,12 +1445,22 @@
 <section id="cta">
   <canvas id="cta-canvas"></canvas>
   <div class="container cta-inner">
-    <span class="section-tag reveal">Get started</span>
-    <h2 class="cta-title reveal">Your next great hire<br/>is one scroll away.</h2>
-    <p class="cta-sub reveal">Join 2,400+ companies already using RYCS to fill roles faster and cheaper than ever before.</p>
-    <div class="cta-form reveal">
-      <input type="email" placeholder="Enter your work email" />
-      <a href="#" class="btn-primary" style="white-space:nowrap">Start for free →</a>
+    <span class="section-tag reveal">Start hiring</span>
+    <h2 class="cta-title reveal">Order your first hires.<br/>Live within 24 hours.</h2>
+    <p class="cta-sub reveal">Tell us what you need. We deliver interview-ready candidates straight into your ATS. No hire? No invoice.</p>
+    <div class="intake-form reveal">
+      <select>
+        <option value="" disabled selected>Role type</option>
+        <option>Logistics / Warehouse</option>
+        <option>Retail / Hospitality</option>
+        <option>Customer Service</option>
+        <option>Sales / Marketing</option>
+        <option>Tech / Digital</option>
+        <option>Drivers / Operations</option>
+        <option>Other</option>
+      </select>
+      <input type="text" placeholder="City or region" />
+      <a href="#" class="btn-primary" style="white-space:nowrap">Get started →</a>
     </div>
   </div>
 </section>
@@ -1507,7 +1471,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="#" class="nav-logo">RYCS</a>
-        <p>Self-serve social job advertising. Live in 10 minutes, measured to the hire. No demo. No lock-in. No CSM.</p>
+        <p>Hire delivery for teams that don't have time to recruit. Pay per hire. No platform. No lock-in.</p>
         <div class="footer-social">
           <a href="#" class="social-btn" title="LinkedIn">in</a>
           <a href="#" class="social-btn" title="X/Twitter">𝕏</a>
@@ -1517,37 +1481,33 @@
         </div>
       </div>
       <div class="footer-col">
-        <h4>Product</h4>
+        <h4>How it works</h4>
         <ul>
-          <li><a href="#">Features</a></li>
-          <li><a href="#">Channels</a></li>
-          <li><a href="#">AI Creative</a></li>
-          <li><a href="#">Analytics</a></li>
-          <li><a href="#">Integrations</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Changelog</a></li>
+          <li><a href="#how">The process</a></li>
+          <li><a href="#roles">Role types</a></li>
+          <li><a href="#vs-agency">vs Agency</a></li>
+          <li><a href="#guarantee">Our guarantee</a></li>
+          <li><a href="#pricing">Pricing</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Solutions</h4>
+        <h4>Role types</h4>
         <ul>
-          <li><a href="#">In-house Teams</a></li>
-          <li><a href="#">Staffing Agencies</a></li>
-          <li><a href="#">Enterprise</a></li>
-          <li><a href="#">Scale-ups</a></li>
-          <li><a href="#">Retail & Logistics</a></li>
-          <li><a href="#">Tech & Finance</a></li>
+          <li><a href="#">Logistics &amp; Warehouse</a></li>
+          <li><a href="#">Retail &amp; Hospitality</a></li>
+          <li><a href="#">Customer Service</a></li>
+          <li><a href="#">Sales &amp; Marketing</a></li>
+          <li><a href="#">Tech &amp; Digital</a></li>
+          <li><a href="#">Drivers &amp; Operations</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Resources</h4>
         <ul>
+          <li><a href="#">Case studies</a></li>
           <li><a href="#">Blog</a></li>
-          <li><a href="#">Case Studies</a></li>
-          <li><a href="#">Webinars</a></li>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">API Docs</a></li>
-          <li><a href="#">Status</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Help center</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1556,7 +1516,6 @@
           <li><a href="#">About</a></li>
           <li><a href="#">Careers</a></li>
           <li><a href="#">Press</a></li>
-          <li><a href="#">Partners</a></li>
           <li><a href="#">Contact</a></li>
           <li><a href="#">Legal</a></li>
         </ul>
