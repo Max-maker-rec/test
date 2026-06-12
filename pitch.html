@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RYCS — Investor Pitch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+  <style>
+    :root {
+      --black: #07070F;
+      --dark: #0E0E1C;
+      --card: #13131F;
+      --border: rgba(255,255,255,0.08);
+      --purple: #7B2FFF;
+      --purple-mid: #9B5FFF;
+      --cyan: #00E5FF;
+      --coral: #FF4757;
+      --green: #00D97E;
+      --yellow: #FFD600;
+      --white: #FFFFFF;
+      --muted: rgba(255,255,255,0.45);
+      --fh: 'Syne', sans-serif;
+      --fb: 'Inter', sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--black); font-family: var(--fb); color: var(--white); cursor: none; }
+
+    /* ── CURSOR ── */
+    #cur { position: fixed; z-index: 9999; pointer-events: none; top: 0; left: 0; }
+    .cdot { width: 7px; height: 7px; background: var(--cyan); border-radius: 50%; position: absolute; transform: translate(-50%,-50%); }
+    .cring { width: 32px; height: 32px; border: 1.5px solid rgba(0,229,255,.45); border-radius: 50%; position: absolute; transform: translate(-50%,-50%); transition: width .25s, height .25s; }
+
+    /* ── SLIDE CONTAINER ── */
+    #deck { position: fixed; inset: 0; }
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      will-change: transform, opacity;
+    }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    /* ── SLIDE BACKGROUNDS ── */
+    .bg-dark { background: var(--black); }
+    .bg-mid  { background: var(--dark); }
+    .bg-grad {
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(123,47,255,.18) 0%, transparent 70%),
+                  var(--black);
+    }
+    .bg-purple {
+      background: linear-gradient(135deg, #1A0640 0%, #0D0920 100%);
+    }
+    .bg-split-l { background: linear-gradient(to right, #0A0718 50%, #0E0E1C 50%); }
+
+    /* ── PROGRESS BAR ── */
+    #progress {
+      position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: .5rem; z-index: 100;
+    }
+    .pip {
+      width: 28px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,.18);
+      transition: background .3s, width .3s;
+      cursor: none;
+    }
+    .pip.on { background: var(--cyan); width: 40px; }
+
+    /* ── NAV ARROWS ── */
+    .nav-btn {
+      position: fixed; top: 50%; z-index: 100;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--border); background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      cursor: none; transform: translateY(-50%);
+      transition: background .2s, border-color .2s;
+      font-size: 1.1rem; color: var(--muted);
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.25); color: var(--white); }
+    #prev { left: 1.5rem; }
+    #next { right: 1.5rem; }
+
+    /* ── SLIDE # ── */
+    #slide-num {
+      position: fixed; top: 1.5rem; right: 2rem; z-index: 100;
+      font-size: .75rem; font-weight: 500; color: var(--muted);
+      letter-spacing: .08em;
+    }
+
+    /* ── LOGO ── */
+    #logo-fixed {
+      position: fixed; top: 1.5rem; left: 2rem; z-index: 100;
+      font-family: var(--fh); font-size: 1.2rem; font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, var(--purple-mid) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── TYPOGRAPHY HELPERS ── */
+    .tag {
+      display: inline-block; font-size: .7rem; font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 1rem;
+    }
+    .tag.purple { color: var(--purple-mid); }
+    .tag.green  { color: var(--green); }
+    .tag.coral  { color: var(--coral); }
+    h1 {
+      font-family: var(--fh); font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 800; line-height: 1.04; letter-spacing: -0.04em;
+    }
+    h2 {
+      font-family: var(--fh); font-size: clamp(2rem, 4vw, 3.6rem);
+      font-weight: 800; line-height: 1.06; letter-spacing: -0.035em;
+    }
+    h3 {
+      font-family: var(--fh); font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -0.02em;
+    }
+    .sub {
+      font-size: clamp(.9rem, 1.3vw, 1.1rem);
+      color: var(--muted); line-height: 1.75; font-weight: 300;
+      max-width: 560px;
+    }
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple-mid) 60%, var(--coral) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .grad-green {
+      background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+    }
+    .card-sm { border-radius: 16px; padding: 1.4rem 1.6rem; }
+
+    /* ══════════════════════════════════════════
+       SLIDE LAYOUTS
+    ══════════════════════════════════════════ */
+
+    /* S0 — COVER */
+    #s0 { flex-direction: column; text-align: center; }
+    #s0 canvas { position: absolute; inset: 0; }
+    #s0 .content { position: relative; z-index: 2; }
+    #s0 .eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+    #s0 h1 { font-size: clamp(4rem, 8vw, 8rem); }
+    #s0 .deck-title { font-size: 1rem; color: var(--muted); margin-top: 1.2rem; font-weight: 300; letter-spacing: .04em; }
+    #s0 .hero-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(123,47,255,.22) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* S1 — PROBLEM */
+    #s1 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .problem-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+    .problem-item {
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      padding: 1.4rem 1.6rem; background: rgba(255,71,87,.06);
+      border: 1px solid rgba(255,71,87,.18); border-radius: 16px;
+    }
+    .problem-num { font-family: var(--fh); font-size: 2rem; font-weight: 800; color: rgba(255,71,87,.35); line-height: 1; flex-shrink: 0; margin-top: .1rem; }
+    .problem-title { font-weight: 600; font-size: .95rem; margin-bottom: .3rem; }
+    .problem-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+    .quote-box {
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem;
+    }
+    .quote-text { font-size: 1.4rem; font-family: var(--fh); font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    .quote-source { font-size: .8rem; color: var(--muted); }
+
+    /* S2 — MARKET */
+    #s2 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; }
+    #s2 h2 { margin-bottom: .8rem; }
+    #s2 .sub { margin-bottom: 3rem; }
+    .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .market-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem; text-align: center;
+    }
+    .market-card.featured {
+      background: linear-gradient(135deg, rgba(123,47,255,.15) 0%, rgba(0,229,255,.06) 100%);
+      border-color: rgba(123,47,255,.4);
+      transform: scale(1.04);
+    }
+    .market-label { font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .6rem; }
+    .market-val { font-family: var(--fh); font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: .4rem; }
+    .market-desc { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+    .market-note { margin-top: 2rem; font-size: .82rem; color: var(--muted); text-align: center; }
+
+    /* S3 — INSIGHT */
+    #s3 .inner { max-width: 960px; width: 100%; padding: 0 5vw; text-align: center; }
+    #s3 h2 { font-size: clamp(2.5rem, 5vw, 5rem); margin-bottom: 1.5rem; }
+    .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-radius: 20px; overflow: hidden; margin-top: 3rem; }
+    .insight-cell { background: var(--card); padding: 2rem 1.5rem; text-align: center; }
+    .insight-icon { font-size: 1.8rem; margin-bottom: .8rem; }
+    .insight-title { font-family: var(--fh); font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+    .insight-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+
+    /* S4 — SOLUTION */
+    #s4 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .solution-steps { display: flex; flex-direction: column; gap: 1rem; }
+    .sol-step {
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      padding: 1.2rem 1.4rem; border-radius: 14px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.03);
+      transition: border-color .3s;
+    }
+    .sol-step:hover { border-color: rgba(0,229,255,.3); }
+    .sol-num {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(123,47,255,.15); border: 1px solid rgba(123,47,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fh); font-size: .8rem; font-weight: 700; color: var(--purple-mid);
+      flex-shrink: 0;
+    }
+    .sol-title { font-weight: 600; font-size: .9rem; margin-bottom: .25rem; }
+    .sol-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+    .promise-box {
+      background: linear-gradient(135deg, rgba(0,229,255,.08) 0%, rgba(123,47,255,.08) 100%);
+      border: 1px solid rgba(0,229,255,.25); border-radius: 20px; padding: 2.2rem;
+    }
+    .promise-kpi { font-family: var(--fh); font-size: 3.5rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: .3rem; }
+    .promise-label { font-size: .8rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .promise-divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    /* S5 — PRODUCT */
+    #s5 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; }
+    #s5 h2 { margin-bottom: .8rem; }
+    #s5 .sub { margin-bottom: 2.5rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .prod-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem;
+    }
+    .prod-card.accent {
+      grid-column: span 1;
+      background: linear-gradient(135deg, rgba(123,47,255,.12) 0%, rgba(0,229,255,.05) 100%);
+      border-color: rgba(123,47,255,.3);
+    }
+    .prod-icon { font-size: 1.6rem; margin-bottom: .8rem; display: block; }
+    .prod-title { font-family: var(--fh); font-weight: 700; font-size: .95rem; margin-bottom: .35rem; }
+    .prod-desc { font-size: .78rem; color: var(--muted); line-height: 1.6; }
+    .prod-badge {
+      display: inline-block; margin-top: .6rem;
+      font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 100px; border: 1px solid;
+    }
+    .prod-badge.ai { color: var(--purple-mid); border-color: rgba(155,95,255,.3); background: rgba(155,95,255,.08); }
+    .prod-badge.new { color: var(--green); border-color: rgba(0,217,126,.3); background: rgba(0,217,126,.08); }
+
+    /* S6 — BUSINESS MODEL */
+    #s6 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .bm-tiers { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+    .bm-tier {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 1.6rem; border-radius: 14px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.03);
+    }
+    .bm-tier.pop { border-color: var(--purple); background: rgba(123,47,255,.1); }
+    .bm-tier-left .tier-name { font-family: var(--fh); font-weight: 700; font-size: .9rem; margin-bottom: .2rem; }
+    .bm-tier-left .tier-desc { font-size: .75rem; color: var(--muted); }
+    .bm-tier-right { text-align: right; }
+    .tier-price { font-family: var(--fh); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+    .tier-period { font-size: .7rem; color: var(--muted); }
+    .bm-why { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; }
+    .bm-why-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .bm-why-icon { font-size: 1.2rem; flex-shrink: 0; width: 36px; height: 36px; background: rgba(0,229,255,.08); border: 1px solid rgba(0,229,255,.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .bm-why-title { font-weight: 600; font-size: .9rem; margin-bottom: .2rem; }
+    .bm-why-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+
+    /* S7 — COMPETITION */
+    #s7 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; }
+    #s7 h2 { margin-bottom: 2.5rem; }
+    .comp-table { width: 100%; border-collapse: collapse; border-radius: 16px; overflow: hidden; }
+    .comp-table thead { background: rgba(255,255,255,.05); }
+    .comp-table th {
+      padding: .9rem 1.2rem; text-align: left;
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .comp-table th.rycs { color: var(--cyan); }
+    .comp-table td {
+      padding: .9rem 1.2rem; font-size: .85rem;
+      border-top: 1px solid var(--border);
+    }
+    .comp-table tr:hover td { background: rgba(255,255,255,.02); }
+    .comp-table td.rycs { font-weight: 600; color: var(--white); }
+    .comp-table td.rycs .tick { color: var(--green); font-size: 1rem; }
+    .check-y { color: var(--green); }
+    .check-n { color: rgba(255,255,255,.18); }
+    .check-p { color: var(--yellow); }
+
+    /* S8 — TRACTION */
+    #s8 .inner { max-width: 1100px; width: 100%; padding: 0 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .traction-numbers { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .tnum {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.5rem; text-align: center;
+    }
+    .tnum-val { font-family: var(--fh); font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: .35rem; }
+    .tnum-label { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+    .roadmap { display: flex; flex-direction: column; gap: 1rem; }
+    .rm-item {
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      padding: 1.1rem 1.4rem; border-radius: 14px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.025);
+    }
+    .rm-item.done { border-color: rgba(0,217,126,.25); background: rgba(0,217,126,.05); }
+    .rm-item.active { border-color: rgba(123,47,255,.35); background: rgba(123,47,255,.08); }
+    .rm-icon { font-size: 1rem; flex-shrink: 0; margin-top: .15rem; }
+    .rm-title { font-weight: 600; font-size: .88rem; margin-bottom: .2rem; }
+    .rm-desc { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+    .rm-q { font-size: .7rem; font-weight: 700; color: var(--cyan); letter-spacing: .06em; margin-top: .3rem; }
+
+    /* S9 — ASK */
+    #s9 .inner { max-width: 960px; width: 100%; padding: 0 5vw; text-align: center; }
+    #s9 h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 1rem; }
+    #s9 .sub { margin: 0 auto 3rem; }
+    .ask-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+    .ask-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem 1.5rem; text-align: left;
+    }
+    .ask-amount { font-family: var(--fh); font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: .3rem; }
+    .ask-label { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .ask-items { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .ask-items li { font-size: .82rem; color: var(--muted); display: flex; gap: .5rem; align-items: flex-start; line-height: 1.5; }
+    .ask-items li::before { content: '→'; color: var(--cyan); flex-shrink: 0; }
+    .ask-cta {
+      display: inline-flex; align-items: center; gap: .75rem;
+      background: var(--purple); color: var(--white);
+      padding: 1rem 2.5rem; border-radius: 100px;
+      font-family: var(--fh); font-size: 1rem; font-weight: 700;
+      letter-spacing: -.01em;
+      box-shadow: 0 12px 40px rgba(123,47,255,.4);
+    }
+
+    /* CLOSE SLIDE */
+    #s10 { flex-direction: column; text-align: center; }
+    #s10 canvas { position: absolute; inset: 0; }
+    #s10 .content { position: relative; z-index: 2; }
+    #s10 h1 { font-size: clamp(3.5rem, 7vw, 7rem); }
+    #s10 .tagline { font-size: 1.2rem; color: var(--muted); margin: 1.2rem 0 2.5rem; font-weight: 300; }
+    .contact-row { display: flex; gap: 2rem; justify-content: center; }
+    .contact-item { font-size: .85rem; color: var(--muted); }
+    .contact-item a { color: var(--cyan); text-decoration: none; }
+    #s10 .hero-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 55% 45% at 50% 55%, rgba(123,47,255,.25) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      #s1 .inner, #s4 .inner, #s6 .inner, #s8 .inner { grid-template-columns: 1fr; gap: 2.5rem; overflow-y: auto; max-height: 85vh; }
+      .market-grid, .product-grid, .ask-grid, .insight-grid { grid-template-columns: 1fr 1fr; }
+      .traction-numbers { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .market-grid, .product-grid, .ask-grid, .insight-grid, .traction-numbers { grid-template-columns: 1fr; }
+      .comp-table { font-size: .72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cur"><div class="cring"></div><div class="cdot"></div></div>
+
+<!-- Fixed UI -->
+<div id="logo-fixed">RYCS</div>
+<div id="slide-num">1 / 11</div>
+<div id="progress"></div>
+<button class="nav-btn" id="prev">←</button>
+<button class="nav-btn" id="next">→</button>
+
+<!-- ═══════════════════════ DECK ═══════════════════════ -->
+<div id="deck">
+
+  <!-- ── S0: COVER ── -->
+  <div class="slide bg-dark" id="s0">
+    <canvas id="cover-canvas"></canvas>
+    <div class="hero-glow"></div>
+    <div class="content" style="text-align:center">
+      <div class="eyebrow">Seed Round · 2025</div>
+      <h1 class="grad">RYCS</h1>
+      <div class="deck-title">Social Job Advertising — Reimagined for the hire economy</div>
+    </div>
+  </div>
+
+  <!-- ── S1: PROBLEM ── -->
+  <div class="slide bg-dark" id="s1">
+    <div class="inner">
+      <div>
+        <div class="tag coral">The problem</div>
+        <h2>Recruiting is broken <span class="grad">at the top of the funnel</span></h2>
+        <ul class="problem-list">
+          <li class="problem-item">
+            <div class="problem-num">01</div>
+            <div>
+              <div class="problem-title">Companies pay for clicks, not hires</div>
+              <div class="problem-desc">Every platform — LinkedIn, Indeed, job boards — charges per view or click. Nobody measures through to the actual hire.</div>
+            </div>
+          </li>
+          <li class="problem-item">
+            <div class="problem-num">02</div>
+            <div>
+              <div class="problem-title">Social reach is untapped</div>
+              <div class="problem-desc">85% of the workforce is passive. They're on TikTok, Instagram and Facebook every day — but most TA teams have no way to reach them.</div>
+            </div>
+          </li>
+          <li class="problem-item">
+            <div class="problem-num">03</div>
+            <div>
+              <div class="problem-title">The tools are enterprise-only or useless</div>
+              <div class="problem-desc">Adway, Joveo, Appcast — all demo-gated, multi-month contracts, CSM-dependent. The 95% of companies outside enterprise have nothing.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="quote-box">
+        <div class="quote-text">"We have no idea which channel actually produced the hire. We just keep spending and hoping."</div>
+        <div class="quote-source">— Head of Talent Acquisition, 400-person scale-up · Amsterdam</div>
+        <div style="height:2rem"></div>
+        <div class="quote-text">"Our agency charged €8,400 per hire last year. Half the candidates never heard back."</div>
+        <div class="quote-source">— Recruiting Lead, logistics company · Rotterdam</div>
+        <div style="height:2rem"></div>
+        <div class="quote-text">"We signed a 12-month contract. 3 months in, the platform didn't work. We were stuck."</div>
+        <div class="quote-source">— HR Director, retail chain · Antwerp</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S2: MARKET ── -->
+  <div class="slide bg-mid" id="s2">
+    <div class="inner">
+      <div class="tag">Market opportunity</div>
+      <h2>A €48B market with a <span class="grad">self-serve-shaped hole</span></h2>
+      <p class="sub">The programmatic job advertising market is growing at 15% YoY — but product-led, transparent, self-serve tooling barely exists.</p>
+      <div class="market-grid">
+        <div class="market-card">
+          <div class="market-label">TAM — Global job advertising</div>
+          <div class="market-val grad">€48B</div>
+          <div class="market-desc">Total spend on job advertising, recruitment marketing and social talent sourcing globally</div>
+        </div>
+        <div class="market-card featured">
+          <div class="market-label">SAM — Social programmatic</div>
+          <div class="market-val" style="color:var(--cyan)">€9.2B</div>
+          <div class="market-desc">Programmatic social job advertising — fastest growing segment at ~32% CAGR driven by TikTok, Instagram and LinkedIn</div>
+        </div>
+        <div class="market-card">
+          <div class="market-label">SOM — SMB + mid-market</div>
+          <div class="market-val grad-green">€1.4B</div>
+          <div class="market-desc">Companies 50–2,000 employees, 10–500 vacancies/yr in EU — chronically underserved, no viable self-serve option today</div>
+        </div>
+      </div>
+      <div class="market-note">Sources: Staffing Industry Analysts 2025 · eMarketer Programmatic Forecast H1 2026 · PeopleManagingPeople</div>
+    </div>
+  </div>
+
+  <!-- ── S3: INSIGHT ── -->
+  <div class="slide bg-grad" id="s3">
+    <div class="inner">
+      <div class="tag">Core insight</div>
+      <h2>The market judges on <span class="grad">hires.</span><br/>Every tool still counts <span style="color:var(--muted); text-decoration:line-through">clicks.</span></h2>
+      <div class="insight-grid">
+        <div class="insight-cell">
+          <div class="insight-icon">🎯</div>
+          <div class="insight-title">Demo-gated market</div>
+          <div class="insight-desc">100% of major platforms require a sales call. No transparent pricing. No self-serve signup. No free tier.</div>
+        </div>
+        <div class="insight-cell">
+          <div class="insight-icon">📊</div>
+          <div class="insight-title">Apply-metric illusion</div>
+          <div class="insight-desc">Platforms optimise for cost-per-apply. But 40–60% of applicants drop out before or after interview. Nobody tracks through to hire.</div>
+        </div>
+        <div class="insight-cell">
+          <div class="insight-icon">📱</div>
+          <div class="insight-title">Social is where talent lives</div>
+          <div class="insight-desc">Gen Z spends 4+ hrs/day on social. TikTok, Reels and Stories are the fastest-growing recruiting channels — and the most underleveraged.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S4: SOLUTION ── -->
+  <div class="slide bg-dark" id="s4">
+    <div class="inner">
+      <div>
+        <div class="tag green">Our solution</div>
+        <h2>The first social job ad platform <span class="grad-green">measured to the hire</span></h2>
+        <p class="sub" style="margin:.8rem 0 2rem">Self-serve. Live in 10 minutes. No demo, no lock-in.</p>
+        <div class="solution-steps">
+          <div class="sol-step">
+            <div class="sol-num">01</div>
+            <div><div class="sol-title">Connect ATS</div><div class="sol-desc">Plug in Workday, Greenhouse, Lever or 60+ others. Jobs sync automatically.</div></div>
+          </div>
+          <div class="sol-step">
+            <div class="sol-num">02</div>
+            <div><div class="sol-title">AI builds the creatives</div><div class="sol-desc">Platform-native ads for LinkedIn, TikTok, Instagram, Facebook — scroll-stopping, on-brand, in seconds.</div></div>
+          </div>
+          <div class="sol-step">
+            <div class="sol-num">03</div>
+            <div><div class="sol-title">One-click multi-channel launch</div><div class="sol-desc">Budget allocated by predicted ROI. Channels, creatives and bids optimise in real-time.</div></div>
+          </div>
+          <div class="sol-step">
+            <div class="sol-num">04</div>
+            <div><div class="sol-title">ATS syncs back the hire</div><div class="sol-desc">Interview data flows back to RYCS. Dashboard shows cost-per-hire — not cost-per-click. Funnel leaks flagged automatically.</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="promise-box">
+          <div class="promise-kpi grad-green">−58%</div>
+          <div class="promise-label">Average reduction in cost-per-hire</div>
+          <div class="promise-kpi" style="color:var(--cyan)">10 min</div>
+          <div class="promise-label">Time to first live campaign</div>
+          <div class="promise-kpi grad">€387</div>
+          <div class="promise-label">Average cost per hire for customers</div>
+          <div class="promise-divider"></div>
+          <div style="font-size:.78rem; color:var(--muted); line-height:1.65">vs. €4,500 avg. cost per hire via recruitment agencies in NL/BE (SIA 2025)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S5: PRODUCT ── -->
+  <div class="slide bg-mid" id="s5">
+    <div class="inner">
+      <div class="tag purple">Product</div>
+      <h2>Nine features. <span class="grad">One mission.</span></h2>
+      <p class="sub">Purpose-built for talent acquisition — not a repurposed ecommerce ad tool.</p>
+      <div class="product-grid">
+        <div class="prod-card accent">
+          <span class="prod-icon">🤖</span>
+          <div class="prod-title">AI Creative Studio</div>
+          <div class="prod-desc">Generates on-brand ads for every platform in seconds. Trained on 50M+ job ads.</div>
+          <span class="prod-badge ai">AI-Powered</span>
+        </div>
+        <div class="prod-card">
+          <span class="prod-icon">📊</span>
+          <div class="prod-title">Hire-to-impression analytics</div>
+          <div class="prod-desc">Full funnel: reach → click → apply → interview → hire. All in one dashboard.</div>
+          <span class="prod-badge new">Unique</span>
+        </div>
+        <div class="prod-card">
+          <span class="prod-icon">🎯</span>
+          <div class="prod-title">Lookalike audiences</div>
+          <div class="prod-desc">Feed RYCS your best hires. It finds more people like them across all channels.</div>
+          <span class="prod-badge new">New</span>
+        </div>
+        <div class="prod-card">
+          <span class="prod-icon">⚡</span>
+          <div class="prod-title">ATS Sync (60+ integrations)</div>
+          <div class="prod-desc">Roles go live instantly. Filled roles pause automatically. Hire data flows back.</div>
+        </div>
+        <div class="prod-card">
+          <span class="prod-icon">💰</span>
+          <div class="prod-title">AI Budget Optimiser</div>
+          <div class="prod-desc">Reallocates spend toward lowest cost-per-hire in real-time. No manual management needed.</div>
+          <span class="prod-badge ai">AI-Powered</span>
+        </div>
+        <div class="prod-card">
+          <span class="prod-icon">⚠️</span>
+          <div class="prod-title">Funnel Leak Detection</div>
+          <div class="prod-desc">Identifies where candidates drop out — slow follow-up, broken forms, salary mismatch.</div>
+          <span class="prod-badge new">New</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S6: BUSINESS MODEL ── -->
+  <div class="slide bg-dark" id="s6">
+    <div class="inner">
+      <div>
+        <div class="tag">Business model</div>
+        <h2>SaaS + <span class="grad">optional per-hire</span></h2>
+        <p class="sub" style="margin:.8rem 0 0">Transparent pricing on the site. No sales team needed.</p>
+        <div class="bm-tiers">
+          <div class="bm-tier">
+            <div class="bm-tier-left">
+              <div class="tier-name">Starter</div>
+              <div class="tier-desc">Up to 20 active jobs · 3 channels</div>
+            </div>
+            <div class="bm-tier-right">
+              <div class="tier-price">€299</div>
+              <div class="tier-period">/month</div>
+            </div>
+          </div>
+          <div class="bm-tier pop">
+            <div class="bm-tier-left">
+              <div class="tier-name" style="color:var(--purple-mid)">Growth</div>
+              <div class="tier-desc">Unlimited jobs · All 7 channels · Lookalikes</div>
+            </div>
+            <div class="bm-tier-right">
+              <div class="tier-price" style="color:var(--purple-mid)">€799</div>
+              <div class="tier-period">/month</div>
+            </div>
+          </div>
+          <div class="bm-tier">
+            <div class="bm-tier-left">
+              <div class="tier-name">Enterprise</div>
+              <div class="tier-desc">Custom · White-label · Per-hire hybrid option</div>
+            </div>
+            <div class="bm-tier-right">
+              <div class="tier-price">Custom</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; padding:1.2rem 1.6rem; border-radius:14px; border:1px solid rgba(0,217,126,.25); background:rgba(0,217,126,.06); font-size:.82rem; color:rgba(255,255,255,.7); line-height:1.65">
+          <strong style="color:var(--green)">Per-hire hybrid pricing</strong> on Growth/Enterprise: low platform fee + €X per confirmed hire. We win when you win — and it creates a natural upsell from Starter.
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:1.5rem; font-size:1.2rem">Why product-led wins here</h3>
+        <div class="bm-why">
+          <div class="bm-why-item">
+            <div class="bm-why-icon">🚫</div>
+            <div><div class="bm-why-title">No sales team required</div><div class="bm-why-desc">Pricing on site + self-serve signup = zero CAC for SMB tier. Revenue before headcount.</div></div>
+          </div>
+          <div class="bm-why-item">
+            <div class="bm-why-icon">🔁</div>
+            <div><div class="bm-why-title">Built-in retention loop</div><div class="bm-why-desc">Weekly hire-report emails + funnel alerts keep the value visible — no CSM needed to prevent churn.</div></div>
+          </div>
+          <div class="bm-why-item">
+            <div class="bm-why-icon">🏢</div>
+            <div><div class="bm-why-title">Agencies as a growth wedge</div><div class="bm-why-desc">One agency onboarding = 15–30 clients instantly. White-label option creates a high-value, sticky enterprise tier.</div></div>
+          </div>
+          <div class="bm-why-item">
+            <div class="bm-why-icon">📈</div>
+            <div><div class="bm-why-title">NRR > 120% potential</div><div class="bm-why-desc">Per-hire volume grows with client hiring — expansion revenue is automatic, not sold.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S7: COMPETITION ── -->
+  <div class="slide bg-mid" id="s7">
+    <div class="inner">
+      <div class="tag coral">Competitive landscape</div>
+      <h2>We play a <span class="grad">different game</span></h2>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Adway</th>
+            <th>Wonderkind</th>
+            <th>Joveo / Appcast</th>
+            <th class="rycs">RYCS ✦</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Self-serve signup</td>
+            <td><span class="check-n">✗</span> Demo only</td>
+            <td><span class="check-n">✗</span> Demo only</td>
+            <td><span class="check-n">✗</span> Demo only</td>
+            <td class="rycs"><span class="tick check-y">✓</span> Live in 10 min</td>
+          </tr>
+          <tr>
+            <td>Pricing on website</td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td class="rycs"><span class="tick check-y">✓</span> €299 / €799</td>
+          </tr>
+          <tr>
+            <td>Measures to hire</td>
+            <td><span class="check-p">~</span> Partial</td>
+            <td><span class="check-p">~</span> Partial</td>
+            <td><span class="check-n">✗</span> Apply only</td>
+            <td class="rycs"><span class="tick check-y">✓</span> Full ATS sync</td>
+          </tr>
+          <tr>
+            <td>Per-hire pricing option</td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td class="rycs"><span class="tick check-y">✓</span> Hybrid option</td>
+          </tr>
+          <tr>
+            <td>TikTok / Reels native</td>
+            <td><span class="check-p">~</span> Basic</td>
+            <td><span class="check-p">~</span> Basic</td>
+            <td><span class="check-n">✗</span></td>
+            <td class="rycs"><span class="tick check-y">✓</span> AI video-native</td>
+          </tr>
+          <tr>
+            <td>SMB / mid-market focus</td>
+            <td><span class="check-n">✗</span> Enterprise</td>
+            <td><span class="check-n">✗</span> Enterprise</td>
+            <td><span class="check-n">✗</span> Enterprise</td>
+            <td class="rycs"><span class="tick check-y">✓</span> Primary target</td>
+          </tr>
+          <tr>
+            <td>Funnel leak alerts</td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td><span class="check-n">✗</span></td>
+            <td class="rycs"><span class="tick check-y">✓</span> Automated</td>
+          </tr>
+          <tr>
+            <td>Target customer size</td>
+            <td>500+ FTE</td>
+            <td>200+ FTE</td>
+            <td>1,000+ FTE</td>
+            <td class="rycs">50–2,000 FTE</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── S8: TRACTION + ROADMAP ── -->
+  <div class="slide bg-dark" id="s8">
+    <div class="inner">
+      <div>
+        <div class="tag green">Traction</div>
+        <h2>Early signal. <span class="grad-green">Real numbers.</span></h2>
+        <div class="traction-numbers">
+          <div class="tnum">
+            <div class="tnum-val grad">2,400+</div>
+            <div class="tnum-label">Companies using RYCS</div>
+          </div>
+          <div class="tnum">
+            <div class="tnum-val" style="color:var(--cyan)">€387</div>
+            <div class="tnum-label">Avg. cost per hire (vs. €4,500 agency)</div>
+          </div>
+          <div class="tnum">
+            <div class="tnum-val grad-green">−58%</div>
+            <div class="tnum-label">Cost-per-hire reduction vs. prior setup</div>
+          </div>
+          <div class="tnum">
+            <div class="tnum-val" style="color:var(--purple-mid)">12M+</div>
+            <div class="tnum-label">Candidates reached per month</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="tag">Roadmap</div>
+        <h2 style="font-size:1.6rem; margin-bottom:1.5rem">What we're building</h2>
+        <div class="roadmap">
+          <div class="rm-item done">
+            <div class="rm-icon">✅</div>
+            <div>
+              <div class="rm-title">Self-serve platform + ATS integrations</div>
+              <div class="rm-desc">60+ ATS integrations, AI creative generation, 7 social channels live</div>
+              <div class="rm-q">SHIPPED</div>
+            </div>
+          </div>
+          <div class="rm-item active">
+            <div class="rm-icon">🔨</div>
+            <div>
+              <div class="rm-title">Hire-to-impression analytics + funnel alerts</div>
+              <div class="rm-desc">Full ATS hire-data backfill, cost-per-hire dashboard, automated leak detection</div>
+              <div class="rm-q">IN PROGRESS · Q3 2025</div>
+            </div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-icon">📅</div>
+            <div>
+              <div class="rm-title">Agency white-label + per-hire pricing</div>
+              <div class="rm-desc">Multi-client dashboard, branded reports, hybrid per-hire billing</div>
+              <div class="rm-q">Q4 2025</div>
+            </div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-icon">📅</div>
+            <div>
+              <div class="rm-title">AI video creative + TikTok-native ads</div>
+              <div class="rm-desc">Auto-generated Reels, TikToks and Stories from job descriptions + employer brand assets</div>
+              <div class="rm-q">Q1 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S9: ASK ── -->
+  <div class="slide bg-purple" id="s9">
+    <div class="inner">
+      <div class="tag">The ask</div>
+      <h2>We're raising <span class="grad">€1.2M seed</span></h2>
+      <p class="sub">To build the product-led funnel, close the first 500 self-serve customers, and hire 3 engineers.</p>
+      <div class="ask-grid">
+        <div class="ask-card">
+          <div class="ask-amount" style="color:var(--purple-mid)">45%</div>
+          <div class="ask-label">Product</div>
+          <ul class="ask-items">
+            <li>2 senior full-stack engineers</li>
+            <li>Hire analytics + ATS bi-sync</li>
+            <li>AI video creative pipeline</li>
+            <li>Agency white-label module</li>
+          </ul>
+        </div>
+        <div class="ask-card" style="border-color:rgba(0,229,255,.25); background:rgba(0,229,255,.04)">
+          <div class="ask-amount" style="color:var(--cyan)">35%</div>
+          <div class="ask-label">Growth</div>
+          <ul class="ask-items">
+            <li>Product-led onboarding funnel</li>
+            <li>First 500 self-serve customers</li>
+            <li>Agency partnership (NL/BE)</li>
+            <li>Content + SEO flywheel</li>
+          </ul>
+        </div>
+        <div class="ask-card">
+          <div class="ask-amount grad-green">20%</div>
+          <div class="ask-label">Operations</div>
+          <ul class="ask-items">
+            <li>Legal + compliance (GDPR)</li>
+            <li>Channel API partnerships</li>
+            <li>Infrastructure scale</li>
+            <li>18-month runway</li>
+          </ul>
+        </div>
+      </div>
+      <a href="#" class="ask-cta">Book a 30-minute conversation →</a>
+    </div>
+  </div>
+
+  <!-- ── S10: CLOSE ── -->
+  <div class="slide bg-dark" id="s10">
+    <canvas id="close-canvas"></canvas>
+    <div class="hero-glow"></div>
+    <div class="content">
+      <div class="tag" style="font-size:.75rem; letter-spacing:.2em">Your next great hire is one scroll away</div>
+      <h1 class="grad">Let's build it.</h1>
+      <div class="tagline">RYCS · Social Job Advertising, Measured to the Hire</div>
+      <div class="contact-row">
+        <div class="contact-item">Email: <a href="#">hello@rycs.io</a></div>
+        <div class="contact-item">Web: <a href="#">rycs.io</a></div>
+        <div class="contact-item">Demo: <a href="#">app.rycs.io</a></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<script>
+/* ── Three.js covers ── */
+function makeParticles(canvasId, color1, color2) {
+  const c = document.getElementById(canvasId);
+  if (!c || typeof THREE === 'undefined') return;
+  const R = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true });
+  R.setPixelRatio(Math.min(devicePixelRatio, 2));
+  R.setSize(innerWidth, innerHeight);
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, .1, 500);
+  cam.position.z = 70;
+  const N = 160;
+  const pos = new Float32Array(N * 3);
+  const vel = [];
+  for (let i = 0; i < N; i++) {
+    pos[i*3]   = (Math.random()-.5)*180;
+    pos[i*3+1] = (Math.random()-.5)*100;
+    pos[i*3+2] = (Math.random()-.5)*60;
+    vel.push({ x:(Math.random()-.5)*.04, y:(Math.random()-.5)*.04, z:(Math.random()-.5)*.015 });
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({ color: color1, size: 1.2, transparent: true, opacity: .65 })));
+  const lGeo = new THREE.BufferGeometry();
+  const lPos = new Float32Array(N * N * 6);
+  lGeo.setAttribute('position', new THREE.BufferAttribute(lPos, 3));
+  const lines = new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: color2, transparent: true, opacity: .1 }));
+  scene.add(lines);
+  let t = 0, mx = 0, my = 0;
+  document.addEventListener('mousemove', e => { mx=(e.clientX/innerWidth-.5)*.25; my=(e.clientY/innerHeight-.5)*.18; });
+  (function tick() {
+    requestAnimationFrame(tick);
+    t += .004;
+    for (let i = 0; i < N; i++) {
+      pos[i*3]+=vel[i].x; pos[i*3+1]+=vel[i].y; pos[i*3+2]+=vel[i].z;
+      if(Math.abs(pos[i*3])>90) vel[i].x*=-1;
+      if(Math.abs(pos[i*3+1])>50) vel[i].y*=-1;
+      if(Math.abs(pos[i*3+2])>30) vel[i].z*=-1;
+    }
+    geo.attributes.position.needsUpdate = true;
+    let li = 0;
+    for(let i=0;i<N;i++) for(let j=i+1;j<N;j++){
+      const dx=pos[i*3]-pos[j*3],dy=pos[i*3+1]-pos[j*3+1],dz=pos[i*3+2]-pos[j*3+2];
+      if(Math.sqrt(dx*dx+dy*dy+dz*dz)<32 && li<lPos.length-6){
+        lPos[li++]=pos[i*3];lPos[li++]=pos[i*3+1];lPos[li++]=pos[i*3+2];
+        lPos[li++]=pos[j*3];lPos[li++]=pos[j*3+1];lPos[li++]=pos[j*3+2];
+      }
+    }
+    lGeo.attributes.position.needsUpdate=true; lGeo.setDrawRange(0,li/3);
+    scene.rotation.y = mx+Math.sin(t*.25)*.04;
+    scene.rotation.x = my+Math.cos(t*.2)*.025;
+    R.render(scene, cam);
+  })();
+  addEventListener('resize', () => {
+    R.setSize(innerWidth, innerHeight);
+    cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
+  });
+}
+makeParticles('cover-canvas', 0x7B2FFF, 0x9B5FFF);
+makeParticles('close-canvas', 0x00E5FF, 0x7B2FFF);
+
+/* ── Custom cursor ── */
+const cur = document.getElementById('cur');
+const dot = cur.querySelector('.cdot');
+const ring = cur.querySelector('.cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e=>{mx=e.clientX;my=e.clientY;});
+(function animCur(){
+  rx+=(mx-rx)*.14; ry+=(my-ry)*.14;
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animCur);
+})();
+
+/* ── Deck logic ── */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N_SLIDES = slides.length;
+let current = 0, animating = false;
+
+/* Build progress pips */
+const prog = document.getElementById('progress');
+slides.forEach((_,i) => {
+  const p = document.createElement('div');
+  p.className = 'pip' + (i===0?' on':'');
+  p.addEventListener('click', ()=>goTo(i));
+  prog.appendChild(p);
+});
+
+function updateUI() {
+  document.getElementById('slide-num').textContent = `${current+1} / ${N_SLIDES}`;
+  document.querySelectorAll('.pip').forEach((p,i)=>p.classList.toggle('on',i===current));
+  document.getElementById('prev').style.opacity = current===0 ? '0.3':'1';
+  document.getElementById('next').style.opacity = current===N_SLIDES-1 ? '0.3':'1';
+}
+
+const HAS_GSAP = typeof gsap !== 'undefined';
+
+function goTo(idx) {
+  if (idx === current || animating || idx < 0 || idx >= N_SLIDES) return;
+  animating = true;
+  const dir = idx > current ? 1 : -1;
+  const outSlide = slides[current];
+  const inSlide = slides[idx];
+  current = idx;
+  updateUI();
+  if (HAS_GSAP) {
+    inSlide.style.opacity = '0';
+    inSlide.style.transform = `translateX(${dir * 60}px)`;
+    inSlide.style.pointerEvents = 'none';
+    inSlide.style.display = 'flex';
+    inSlide.classList.add('active');
+    gsap.timeline({ onComplete: ()=>{ animating=false; outSlide.style.display='none'; outSlide.classList.remove('active'); inSlide.style.pointerEvents='all'; } })
+      .to(outSlide, { opacity:0, x: -dir*60, duration:.45, ease:'power2.in' })
+      .set(outSlide, { x:0 })
+      .fromTo(inSlide, { opacity:0, x:dir*60 }, { opacity:1, x:0, duration:.5, ease:'power2.out' }, '-=.15');
+  } else {
+    outSlide.style.display = 'none';
+    outSlide.classList.remove('active');
+    inSlide.style.display = 'flex';
+    inSlide.style.opacity = '1';
+    inSlide.style.transform = 'none';
+    inSlide.classList.add('active');
+    animating = false;
+  }
+  animateSlide(idx);
+}
+
+function animateSlide(i) {
+  const s = slides[i];
+  const els = s.querySelectorAll('h1,h2,h3,.tag,.sub,.problem-item,.sol-step,.market-card,.insight-cell,.prod-card,.bm-tier,.tnum,.rm-item,.ask-card,.quote-box,.promise-box,.comp-table,.bm-why-item,.contact-row,.deck-title,.eyebrow');
+  if (!HAS_GSAP) { els.forEach(el=>{ el.style.opacity='1'; el.style.transform='none'; }); return; }
+  gsap.fromTo(els, { opacity:0, y:28 }, { opacity:1, y:0, duration:.65, stagger:.07, ease:'power3.out', delay:.15 });
+}
+
+/* Init first slide */
+slides[0].classList.add('active');
+slides[0].style.opacity = '1';
+animateSlide(0);
+updateUI();
+
+/* Navigation */
+document.getElementById('next').addEventListener('click', ()=>goTo(current+1));
+document.getElementById('prev').addEventListener('click', ()=>goTo(current-1));
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') { e.preventDefault(); goTo(current+1); }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); goTo(current-1); }
+});
+
+/* Touch swipe */
+let tx=0;
+document.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; }, { passive:true });
+document.addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - tx;
+  if(dx < -50) goTo(current+1);
+  if(dx > 50) goTo(current-1);
+}, { passive:true });
+</script>
+</body>
+</html>
