@@ -14,8 +14,6 @@
   <!-- GSAP + Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -1461,9 +1459,19 @@
 
 <!-- ═══════════════════════════════════ SCRIPTS ═══════════════════════════════════ -->
 <script>
-/* ── GSAP Setup ── */
-gsap.registerPlugin(ScrollTrigger, CustomEase);
-CustomEase.create("expo", "0.16, 1, 0.3, 1");
+/* ── GSAP Setup (graceful when CDN unavailable) ── */
+const HAS_GSAP = typeof gsap !== 'undefined';
+const HAS_THREE = typeof THREE !== 'undefined';
+if (HAS_GSAP && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+if (!HAS_GSAP) {
+  // No GSAP: show hero content immediately via CSS transitions
+  document.addEventListener('DOMContentLoaded', () => {
+    ['.hero-badge','.hero-sub','.hero-actions','.hero-scroll'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) { el.style.transition = 'opacity .8s'; el.style.opacity = 1; }
+    });
+  });
+}
 
 /* ── Cursor ── */
 const cursor = document.getElementById('cursor');
@@ -1489,6 +1497,7 @@ window.addEventListener('scroll', () => {
 
 /* ── THREE.JS Hero ── */
 (function() {
+  if (!HAS_THREE) return;
   const canvas = document.getElementById('three-canvas');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1586,6 +1595,7 @@ window.addEventListener('scroll', () => {
 
 /* ── THREE.JS CTA Particles ── */
 (function() {
+  if (!HAS_THREE) return;
   const canvas = document.getElementById('cta-canvas');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1627,49 +1637,56 @@ window.addEventListener('scroll', () => {
 
 /* ── GSAP Hero Reveal ── */
 window.addEventListener('load', () => {
+  if (!HAS_GSAP) return;
   const tl = gsap.timeline({ delay: 0.2 });
-  tl.to('.hero-badge', { opacity: 1, y: 0, duration: 0.6, ease: 'expo' })
+  tl.to('.hero-badge', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' })
     .fromTo('.hero-title .word',
       { y: '110%', opacity: 0 },
-      { y: '0%', opacity: 1, duration: 0.9, stagger: 0.12, ease: 'expo' },
+      { y: '0%', opacity: 1, duration: 0.9, stagger: 0.12, ease: 'expo.out' },
       '-=0.2'
     )
-    .to('.hero-sub', { opacity: 1, y: 0, duration: 0.7, ease: 'expo' }, '-=0.4')
-    .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6, ease: 'expo' }, '-=0.3')
+    .to('.hero-sub', { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.4')
+    .to('.hero-actions', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, '-=0.3')
     .to('.hero-scroll', { opacity: 1, duration: 0.5 }, '-=0.1');
 });
 
-/* ── Scroll Reveals ── */
-document.querySelectorAll('.reveal').forEach(el => {
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top 88%',
-    onEnter: () => el.classList.add('revealed'),
-    once: true
+/* ── Scroll Reveals (IntersectionObserver — robust everywhere) ── */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+      revealObserver.unobserve(entry.target);
+    }
   });
-});
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 /* ── Animated Counter ── */
-document.querySelectorAll('.stat-number').forEach(el => {
+function runCounter(el) {
   const target = parseFloat(el.dataset.count);
   const suffix = el.dataset.suffix || '';
   const isDecimal = target % 1 !== 0;
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top 85%',
-    once: true,
-    onEnter: () => {
-      gsap.fromTo({ val: 0 }, { val: target }, {
-        duration: 2, ease: 'power2.out',
-        onUpdate: function() {
-          el.textContent = isDecimal
-            ? this.targets()[0].val.toFixed(1) + suffix
-            : Math.round(this.targets()[0].val).toLocaleString() + suffix;
-        }
-      });
+  const start = performance.now(), dur = 2000;
+  function frame(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = target * eased;
+    el.textContent = isDecimal
+      ? val.toFixed(1) + suffix
+      : Math.round(val).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      runCounter(entry.target);
+      counterObserver.unobserve(entry.target);
     }
   });
-});
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
 
 /* ── Feature cards mouse glow ── */
 document.querySelectorAll('.feature-card').forEach(card => {
